@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() => runApp(const MyApp());
 
@@ -15,11 +16,11 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'O Portão (Miniatura)',
+      title: 'Safe Gate',
       debugShowCheckedModeBanner: false,
       theme: _isDarkMode
-          ? ThemeData.dark().copyWith(primaryColor: const Color(0xFF269653))
-          : ThemeData.light().copyWith(primaryColor: const Color(0xFF34C759)),
+          ? ThemeData.dark().copyWith(primaryColor: const Color(0xFF002366))
+          : ThemeData.light().copyWith(primaryColor: const Color(0xFF4682B4)),
       home: MyHomePage(
         onThemeChanged: () {
           setState(() {
@@ -49,121 +50,286 @@ class MyHomePage extends StatelessWidget {
         backgroundColor: Theme.of(context).primaryColor,
         title: const Icon(Icons.star, color: Colors.white),
         actions: [
-          IconButton(
-            icon: Icon(isDarkMode ? (Icons.light_mode) : Icons.dark_mode,
-                color: Colors.white),
-            onPressed: onThemeChanged,
+          Builder(
+            builder: (context) => IconButton(
+              icon: const Icon(Icons.settings, color: Colors.white),
+              onPressed: () => Scaffold.of(context).openEndDrawer(),
+            ),
           ),
         ],
       ),
-      body: Container(
-        padding: const EdgeInsets.all(24),
-        child: const Column(
+      endDrawer: Drawer(
+        width: 300,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.horizontal(
+            left: Radius.circular(20),
+          ),
+        ),
+        elevation: 10,
+        child: ListView(
+          padding: EdgeInsets.zero,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SizedBox(
-                  width: 180,
-                  height: 200,
-                  child: Card(
-                    elevation: 5,
-                    child: Padding(
-                      padding: EdgeInsets.all(8),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Text(
-                            'Total de vezes utilizado',
-                            style: TextStyle(fontSize: 24),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          // SizedBox(height: 15),
-                          Text(
-                            '0',
-                            style: TextStyle(fontSize: 64),
-                          ),
-                        ],
+            DrawerHeader(
+              decoration: BoxDecoration(color: Theme.of(context).primaryColor),
+              padding: EdgeInsets.all(16),
+              child: SizedBox(
+                height: 30,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Configurações',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
+                    SizedBox(height: 8),
+                    Text(
+                      'Olá, Joãozinho!',
+                      style: TextStyle(
+                        fontSize: 18.6,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.secondaryContainer,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: ListTile(
+                title: Text(
+                  'Joãozinho',
+                  style: TextStyle(
+                    fontSize: 20.8,
+                    fontWeight: FontWeight.w500,
+                    color: Theme.of(context).colorScheme.onSecondaryContainer,
                   ),
                 ),
-                SizedBox(
-                  height: 200,
+                leading: CircleAvatar(
+                  radius: 28,
+                  // backgroundColor: Colors.blue,
+                  child: Icon(Icons.person, size: 36),
+                ),
+              ),
+            ),
+            ListTile(
+              title: const Text(
+                'Tema',
+                style: TextStyle(
+                  fontSize: 20.8,
+                ),
+              ),
+              trailing: Switch(
+                value: isDarkMode,
+                onChanged: (value) {
+                  onThemeChanged();
+                },
+                activeColor: Theme.of(context).primaryColor,
+              ),
+            ),
+            ListTile(
+              title: Text(
+                'Alterar senha',
+                style: TextStyle(
+                  fontSize: 20.8,
+                ),
+              ),
+            ),
+            ListTile(
+              title: Text(
+                'Histórico',
+                style: TextStyle(
+                  fontSize: 20.8,
+                ),
+              ),
+            ),
+            ListTile(
+              title: Text(
+                'Sair',
+                style: TextStyle(
+                  fontSize: 20.8,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      body: Container(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SizedBox(
+              width: 200,
+              height: 200,
+              child: Card(
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Color(0xFF002366)
+                    : Color(0xFF4682B4),
+                elevation: 5,
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      SizedBox(
-                        width: 150,
-                        height: 65,
-                        child: Card(
-                          elevation: 5,
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 8),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Icon(Icons.arrow_circle_left),
-                                Text('Abrir', style: TextStyle(fontSize: 19.2)),
-                                Text('0', style: TextStyle(fontSize: 19.2)),
-                              ],
-                            ),
-                          ),
+                      Text(
+                        'Total de vezes utilizado',
+                        style: GoogleFonts.roboto(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
                         ),
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      SizedBox(
-                        width: 150,
-                        height: 65,
-                        child: Card(
-                          elevation: 5,
-                          child: Padding(
-                            padding: EdgeInsets.all(8),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Icon(Icons.arrow_circle_right),
-                                Text('Fechar',
-                                    style: TextStyle(fontSize: 19.2)),
-                                Text('0', style: TextStyle(fontSize: 19.2)),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 150,
-                        height: 65,
-                        child: Card(
-                          elevation: 5,
-                          child: Padding(
-                            padding: EdgeInsets.all(8),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Icon(Icons.stop_circle),
-                                Text('Parar', style: TextStyle(fontSize: 19.2)),
-                                Text('0', style: TextStyle(fontSize: 19.2)),
-                              ],
-                            ),
-                          ),
+                      Text(
+                        '0',
+                        style: GoogleFonts.inter(
+                          fontSize: 64,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
                         ),
                       ),
                     ],
                   ),
                 ),
-              ],
+              ),
             ),
-            SizedBox(height: 18),
+            Container(
+              width: 300,
+              height: 225,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    height: 65,
+                    child: Card(
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Color(0xFF2D3748)
+                          : Colors.white,
+                      elevation: 6,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Icon(Icons.arrow_circle_left),
+                            Text(
+                              'ABRIR',
+                              style: GoogleFonts.roboto(
+                                fontSize: 25.6,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              '0',
+                              style: GoogleFonts.inter(
+                                fontSize: 25.6,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 65,
+                    child: Card(
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Color(0xFF2D3748)
+                          : Colors.white,
+                      elevation: 5,
+                      child: Padding(
+                        padding: EdgeInsets.all(8),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Icon(Icons.arrow_circle_right),
+                            Text(
+                              'FECHAR',
+                              style: GoogleFonts.roboto(
+                                fontSize: 25.6,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              '0',
+                              style: GoogleFonts.inter(
+                                fontSize: 25.6,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 65,
+                    child: Card(
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Color(0xFF2D3748)
+                          : Colors.white,
+                      elevation: 5,
+                      child: Padding(
+                        padding: EdgeInsets.all(8),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Icon(Icons.stop_circle),
+                            Text(
+                              'PARAR',
+                              style: GoogleFonts.roboto(
+                                fontSize: 25.6,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              '0',
+                              style: GoogleFonts.inter(
+                                fontSize: 25.6,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
             Card(
-              elevation: 5,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Color(0xFF002366)
+                  : Color(0xFF4682B4),
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
               child: Padding(
                 padding: EdgeInsets.all(16),
                 child: SizedBox(
-                  height: 60,
+                  height: 35,
                   child: Center(
                     child: Text(
                       'Último registro: 13:15 | Quinta-feira | Abril 2025',
-                      style: TextStyle(fontSize: 24),
+                      style: GoogleFonts.inter(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                     ),
@@ -173,24 +339,6 @@ class MyHomePage extends StatelessWidget {
             ),
           ],
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: Theme.of(context).primaryColor,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home, color: Colors.white),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.history, color: Colors.white),
-              label: 'Histórico'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.person, color: Colors.white), label: 'Perfil'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.settings, color: Colors.white),
-              label: 'Configurações'),
-        ],
       ),
     );
   }
