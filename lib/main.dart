@@ -115,12 +115,23 @@ class MyHomePage extends StatelessWidget {
                 ),
                 leading: CircleAvatar(
                   radius: 28,
-                  // backgroundColor: Colors.blue,
                   child: Icon(Icons.person, size: 36),
+                ),
+                subtitle: Text(
+                  'Ver perfil',
+                  style: TextStyle(
+                    color: Colors.grey[600],
+                    fontSize: 14,
+                  ),
                 ),
               ),
             ),
+            Divider(height: 2),
             ListTile(
+              leading: Icon(
+                Icons.brightness_6,
+                color: Colors.grey[700],
+              ),
               title: const Text(
                 'Tema',
                 style: TextStyle(
@@ -135,29 +146,47 @@ class MyHomePage extends StatelessWidget {
                 activeColor: Theme.of(context).primaryColor,
               ),
             ),
+            Divider(height: 1),
             ListTile(
+              leading: Icon(
+                Icons.lock,
+                color: Colors.grey[700],
+              ),
               title: Text(
                 'Alterar senha',
                 style: TextStyle(
                   fontSize: 20.8,
                 ),
               ),
+              onTap: () {},
             ),
+            Divider(height: 1),
             ListTile(
+              leading: Icon(
+                Icons.history,
+                color: Colors.grey[700],
+              ),
               title: Text(
                 'Histórico',
                 style: TextStyle(
                   fontSize: 20.8,
                 ),
               ),
+              onTap: () {},
             ),
+            Divider(height: 1),
             ListTile(
+              leading: Icon(
+                Icons.exit_to_app,
+                color: Colors.red[400],
+              ),
               title: Text(
                 'Sair',
                 style: TextStyle(
                   fontSize: 20.8,
                 ),
               ),
+              onTap: () {},
             ),
           ],
         ),
@@ -324,7 +353,7 @@ class MyHomePage extends StatelessWidget {
                   height: 35,
                   child: Center(
                     child: Text(
-                      'Último registro: 13:15 | Quinta-feira | Abril 2025',
+                      'Último registro: 13:15 | Quinta-feira | 16 Abril 2025',
                       style: GoogleFonts.inter(
                         fontSize: 24,
                         fontWeight: FontWeight.w600,
