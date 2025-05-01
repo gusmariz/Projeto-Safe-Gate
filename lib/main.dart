@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'telaLogin.dart';
 
 void main() => runApp(const MyApp());
 
@@ -21,14 +22,24 @@ class _MyAppState extends State<MyApp> {
       theme: _isDarkMode
           ? ThemeData.dark().copyWith(primaryColor: const Color(0xFF002366))
           : ThemeData.light().copyWith(primaryColor: const Color(0xFF4682B4)),
-      home: MyHomePage(
-        onThemeChanged: () {
-          setState(() {
-            _isDarkMode = !_isDarkMode;
-          });
-        },
-        isDarkMode: _isDarkMode,
-      ),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => LoginScreen(
+              onLoginSuccess: () {
+                Navigator.pushReplacementNamed(context, '/home');
+              },
+            ),
+        '/home': (context) => MyHomePage(
+              isDarkMode: _isDarkMode,
+              onThemeChanged: () {
+                setState(
+                  () {
+                    _isDarkMode = !_isDarkMode;
+                  },
+                );
+              },
+            ),
+      },
     );
   }
 }
