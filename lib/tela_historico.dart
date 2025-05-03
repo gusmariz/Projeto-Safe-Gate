@@ -1,9 +1,32 @@
 import 'package:flutter/material.dart';
 
-class HistoryList extends StatelessWidget {
-  final List<HistoryItem> itens = [
-    HistoryItem("Joãozinho abriu", "13:42", "Terça-feira", "03/05/2025"),
-    HistoryItem("Joãozinho fechou", "13:43", "Terça-feira", "03/05/2025"),
+class TelaHistorico extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Histórico de ações'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.filter_list),
+            onPressed: () {},
+          ),
+        ],
+      ),
+      body: ListaHistorico(),
+    );
+  }
+}
+
+class ListaHistorico extends StatelessWidget {
+  final List<ItemHistorico> itens = [
+    ItemHistorico("Joãozinho abriu", "13:42", "Terça-feira", "03/05/2025"),
+    ItemHistorico("Joãozinho fechou", "13:43", "Terça-feira", "03/05/2025"),
   ];
 
   @override
@@ -11,25 +34,25 @@ class HistoryList extends StatelessWidget {
     return ListView.builder(
       itemCount: itens.length,
       itemBuilder: (context, index) {
-        return HistoryTile(item: itens[index]);
+        return ElementoHistorico(item: itens[index]);
       },
     );
   }
 }
 
-class HistoryItem {
+class ItemHistorico {
   final String titulo;
   final String hora;
   final String dia;
   final String data;
 
-  HistoryItem(this.titulo, this.hora, this.dia, this.data);
+  ItemHistorico(this.titulo, this.hora, this.dia, this.data);
 }
 
-class HistoryTile extends StatelessWidget {
-  final HistoryItem item;
+class ElementoHistorico extends StatelessWidget {
+  final ItemHistorico item;
 
-  const HistoryTile({Key? key, required this.item}) : super(key: key);
+  const ElementoHistorico({Key? key, required this.item}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +76,20 @@ class HistoryTile extends StatelessWidget {
           item.titulo,
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 5),
+            Text('${item.dia}, ${item.data}'),
+            SizedBox(height: 3),
+            Text(
+              item.hora,
+              style: TextStyle(color: Colors.grey[600]),
+            )
+          ],
+        ),
+        trailing: Icon(Icons.chevron_right),
+        onTap: () {},
       ),
     );
   }

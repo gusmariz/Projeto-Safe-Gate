@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hello/tela_historico.dart';
 import 'tela_login.dart';
 
 void main() => runApp(const MyApp());
@@ -39,6 +40,7 @@ class _MyAppState extends State<MyApp> {
                 );
               },
             ),
+        '/telaHistorico': (context) => TelaHistorico(),
       },
     );
   }
@@ -184,7 +186,7 @@ class MyHomePage extends StatelessWidget {
                 ),
               ),
               onTap: () {
-                Navigator.pushReplacementNamed(context, './telaHistorico.dart');
+                Navigator.pushNamed(context, '/telaHistorico');
               },
             ),
             Divider(height: 1),
