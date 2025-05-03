@@ -23,3 +23,8 @@ ios/build/
 .DS_Store
 
 .metadata
+
+android/.gradle/
+android/build/
+android/app/build/
+*.keystore
