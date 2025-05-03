@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'telaCadastro.dart'; // Certifique-se de que o caminho esteja correto
+import 'tela_cadastro.dart'; // Certifique-se de que o caminho esteja correto
 
 class LoginScreen extends StatelessWidget {
   final VoidCallback onLoginSuccess;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'telaLogin.dart';
+import 'tela_login.dart';
 
 void main() => runApp(const MyApp());
 
@@ -59,7 +59,7 @@ class MyHomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
-        title: const Icon(Icons.star, color: Colors.white),
+        title: Image.asset('lib/assets/safe-gate-img.jpg', height: 50,),
         actions: [
           Builder(
             builder: (context) => IconButton(
@@ -183,7 +183,9 @@ class MyHomePage extends StatelessWidget {
                   fontSize: 20.8,
                 ),
               ),
-              onTap: () {},
+              onTap: () {
+                Navigator.pushReplacementNamed(context, './telaHistorico.dart');
+              },
             ),
             Divider(height: 1),
             ListTile(
@@ -197,7 +199,9 @@ class MyHomePage extends StatelessWidget {
                   fontSize: 20.8,
                 ),
               ),
-              onTap: () {},
+              onTap: () {
+                Navigator.pushReplacementNamed(context, '/');
+              },
             ),
           ],
         ),
