@@ -278,7 +278,7 @@ class MyHomePage extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Icon(Icons.arrow_circle_left),
+                            Icon(Icons.lock_open),
                             Text(
                               'ABRIR',
                               style: GoogleFonts.roboto(
@@ -311,7 +311,7 @@ class MyHomePage extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Icon(Icons.arrow_circle_right),
+                            Icon(Icons.lock),
                             Text(
                               'FECHAR',
                               style: GoogleFonts.roboto(
@@ -344,7 +344,7 @@ class MyHomePage extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Icon(Icons.stop_circle),
+                            Icon(Icons.cancel),
                             Text(
                               'PARAR',
                               style: GoogleFonts.roboto(
