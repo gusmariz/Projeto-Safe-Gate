@@ -63,7 +63,14 @@ class MyHomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
-        title: Text('SafeGate', style: GoogleFonts.inter(color: Colors.white)),
+        title: Text(
+          'SafeGate',
+          style: GoogleFonts.workSans(
+            color: Colors.white,
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         actions: [
           Builder(
             builder: (context) => IconButton(
