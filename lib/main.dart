@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hello/tela_historico.dart';
+import 'tela_historico.dart';
 import 'tela_login.dart';
+import 'tela_alt_senha.dart';
 
 void main() => runApp(const MyApp());
 
@@ -41,6 +42,7 @@ class _MyAppState extends State<MyApp> {
               },
             ),
         '/telaHistorico': (context) => TelaHistorico(),
+        '/telaAltSenha': (context) => TelaAltSenha(),
       },
     );
   }
@@ -171,7 +173,9 @@ class MyHomePage extends StatelessWidget {
                   fontSize: 20.8,
                 ),
               ),
-              onTap: () {},
+              onTap: () {
+                Navigator.pushNamed(context, '/telaAltSenha');
+              },
             ),
             Divider(height: 1),
             ListTile(
