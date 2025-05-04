@@ -12,6 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   commit: ^0.0.1-dev.2
+  flutter_launcher_icons: ^0.14.3
 
 dev_dependencies:
   flutter_test:
