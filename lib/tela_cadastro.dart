@@ -5,11 +5,10 @@ class CadastroScreen extends StatelessWidget {
 
   CadastroScreen({super.key, required this.onCadastroConcluido});
 
-  final TextEditingController _nomeController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _senhaController = TextEditingController();
-  final TextEditingController _confirmarSenhaController =
-      TextEditingController();
+  final _nomeController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _senhaController = TextEditingController();
+  final _confirmarSenhaController = TextEditingController();
 
   void _cadastrar(BuildContext context) {
     final nome = _nomeController.text;
