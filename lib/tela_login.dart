@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'tela_cadastro.dart'; // Certifique-se de que o caminho esteja correto
+import 'tela_alt_senha.dart';
 
 class LoginScreen extends StatelessWidget {
   final VoidCallback onLoginSuccess;
 
   LoginScreen({super.key, required this.onLoginSuccess});
 
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _senhaController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _senhaController = TextEditingController();
 
   void _login(BuildContext context) {
     final email = _emailController.text;
@@ -31,6 +32,15 @@ class LoginScreen extends StatelessWidget {
             Navigator.pop(context); // Retorna para o login após o cadastro
           },
         ),
+      ),
+    );
+  }
+
+  void _navegarParaEsqueciSenha(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => TelaAltSenha(),
       ),
     );
   }
@@ -117,7 +127,7 @@ class LoginScreen extends StatelessWidget {
                         alignment: Alignment.centerRight,
                         child: TextButton(
                           onPressed: () {
-                            // Ação para recuperar senha
+                            _navegarParaEsqueciSenha(context);
                           },
                           child: const Text(
                             'Esqueceu a senha?',
