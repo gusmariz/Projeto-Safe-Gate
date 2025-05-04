@@ -19,7 +19,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Safe Gate',
+      title: 'SafeGate',
       debugShowCheckedModeBanner: false,
       theme: _isDarkMode
           ? ThemeData.dark().copyWith(primaryColor: const Color(0xFF002366))
@@ -63,7 +63,7 @@ class MyHomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
-        title: Image.asset('lib/assets/safe-gate-img.jpg', height: 50,),
+        title: Text('SafeGate', style: GoogleFonts.inter(color: Colors.white)),
         actions: [
           Builder(
             builder: (context) => IconButton(
