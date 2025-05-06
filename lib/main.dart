@@ -228,9 +228,7 @@ class MyHomePage extends StatelessWidget {
               width: 200,
               height: 200,
               child: Card(
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? Color(0xFF002366)
-                    : Color(0xFF4682B4),
+                color: Theme.of(context).primaryColor,
                 elevation: 5,
                 child: Padding(
                   padding: const EdgeInsets.all(8),
@@ -362,9 +360,7 @@ class MyHomePage extends StatelessWidget {
               ),
             ),
             Card(
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? Color(0xFF002366)
-                  : Color(0xFF4682B4),
+              color: Theme.of(context).primaryColor,
               elevation: 4,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
