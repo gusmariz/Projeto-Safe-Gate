@@ -41,11 +41,12 @@ class CadastroScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor = Theme.of(context).primaryColor;
+
     return Scaffold(
-      backgroundColor: const Color(0xFF4682B4),
+      backgroundColor: primaryColor,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF3A6A97),
-        title: const Text('Cadastro'),
+        backgroundColor: primaryColor,
         foregroundColor: Colors.white,
       ),
       body: SafeArea(
