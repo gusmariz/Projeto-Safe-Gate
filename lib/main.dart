@@ -269,9 +269,7 @@ class MyHomePage extends StatelessWidget {
                     width: double.infinity,
                     height: 65,
                     child: Card(
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? Color(0xFF2D3748)
-                          : Colors.white,
+                      color: Theme.of(context).colorScheme.secondaryContainer,
                       elevation: 6,
                       child: Padding(
                         padding: EdgeInsets.symmetric(horizontal: 8),
@@ -302,9 +300,7 @@ class MyHomePage extends StatelessWidget {
                     width: double.infinity,
                     height: 65,
                     child: Card(
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? Color(0xFF2D3748)
-                          : Colors.white,
+                      color: Theme.of(context).colorScheme.secondaryContainer,
                       elevation: 5,
                       child: Padding(
                         padding: EdgeInsets.all(8),
@@ -335,9 +331,7 @@ class MyHomePage extends StatelessWidget {
                     width: double.infinity,
                     height: 65,
                     child: Card(
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? Color(0xFF2D3748)
-                          : Colors.white,
+                      color: Theme.of(context).colorScheme.secondaryContainer,
                       elevation: 5,
                       child: Padding(
                         padding: EdgeInsets.all(8),
