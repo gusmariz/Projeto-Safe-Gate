@@ -154,7 +154,7 @@ class LoginScreen extends StatelessWidget {
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 32, vertical: 16),
-                            backgroundColor: primaryColor, // Cor de fundo
+                            backgroundColor: const Color(0xFF007AFF), // Cor de fundo
                             foregroundColor: Colors.white, // Cor do texto
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
