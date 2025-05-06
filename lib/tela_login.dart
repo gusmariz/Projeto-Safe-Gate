@@ -95,7 +95,8 @@ class LoginScreen extends StatelessWidget {
                             controller: _emailController,
                             decoration: InputDecoration(
                               labelText: 'Email',
-                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12)),
                               // suffixIcon: IconButton(
                               //   icon: Icon(true ? Icons.visibility : Icons.visibility_off),
                               //   onPressed: () {
@@ -117,7 +118,8 @@ class LoginScreen extends StatelessWidget {
                             obscureText: true,
                             decoration: InputDecoration(
                               labelText: 'Senha',
-                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12)),
                               // suffixIcon: IconButton(
                               //   icon: Icon(true ? Icons.visibility : Icons.visibility_off),
                               //   onPressed: () {
@@ -140,7 +142,7 @@ class LoginScreen extends StatelessWidget {
                             },
                             child: const Text(
                               'Esqueceu a senha?',
-                              style: TextStyle(color: Color(0xFF4682B4)),
+                              style: TextStyle(color: Colors.blue),
                             ),
                           ),
                         ),
@@ -165,15 +167,12 @@ class LoginScreen extends StatelessWidget {
                         // Divisor com "ou"
                         const Row(
                           children: [
-                            Expanded(child: Divider(color: Colors.black)),
+                            Expanded(child: Divider(thickness: 2)),
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: 8),
-                              child: Text(
-                                'ou',
-                                style: TextStyle(color: Colors.black),
-                              ),
+                              child: Text('ou'),
                             ),
-                            Expanded(child: Divider(color: Colors.black)),
+                            Expanded(child: Divider(thickness: 2)),
                           ],
                         ),
 
@@ -183,7 +182,7 @@ class LoginScreen extends StatelessWidget {
                           child: const Text(
                             'Criar conta',
                             style: TextStyle(
-                              color: Color(0xFF4682B4),
+                              color: Colors.blue,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
