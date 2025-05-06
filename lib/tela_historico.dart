@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 
 class TelaHistorico extends StatelessWidget {
+  const TelaHistorico({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Histórico de ações'),
+        title: const Text('Histórico de ações'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.filter_list),
+            icon: const Icon(Icons.filter_list),
             onPressed: () {},
           ),
         ],
@@ -24,6 +25,8 @@ class TelaHistorico extends StatelessWidget {
 }
 
 class ListaHistorico extends StatelessWidget {
+  ListaHistorico({super.key});
+
   final List<ItemHistorico> itens = [
     ItemHistorico("Joãozinho abriu", "13:42", "Terça-feira", "03/05/2025"),
     ItemHistorico("Joãozinho fechou", "13:43", "Terça-feira", "03/05/2025"),
@@ -50,45 +53,39 @@ class ItemHistorico {
 }
 
 class ElementoHistorico extends StatelessWidget {
-  final ItemHistorico item;
+  const ElementoHistorico({super.key, required this.item});
 
-  const ElementoHistorico({Key? key, required this.item}) : super(key: key);
+  final ItemHistorico item;
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      color: Theme.of(context).colorScheme.secondaryContainer,
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       elevation: 2,
       child: ListTile(
-        contentPadding: EdgeInsets.all(16),
-        leading: Container(
-          width: 50,
-          height: 50,
-          decoration: BoxDecoration(
-            color: Colors.blue[500],
-            shape: BoxShape.circle,
-          ),
-          child: Icon(
-            Icons.person,
-          ),
+        contentPadding: const EdgeInsets.all(16),
+        leading: const CircleAvatar(
+          radius: 28,
+          child: Icon(Icons.person, size: 36),
         ),
         title: Text(
           item.titulo,
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 5),
+            const SizedBox(height: 5),
             Text('${item.dia}, ${item.data}'),
-            SizedBox(height: 3),
+            const SizedBox(height: 3),
             Text(
               item.hora,
               style: TextStyle(color: Colors.grey[600]),
             )
           ],
         ),
-        trailing: Icon(Icons.chevron_right),
+        trailing: const Icon(Icons.chevron_right),
         onTap: () {},
       ),
     );
