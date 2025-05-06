@@ -93,8 +93,8 @@ class MyHomePage extends StatelessWidget {
           children: [
             DrawerHeader(
               decoration: BoxDecoration(color: Theme.of(context).primaryColor),
-              padding: EdgeInsets.all(16),
-              child: SizedBox(
+              padding: const EdgeInsets.all(16),
+              child: const SizedBox(
                 height: 30,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
