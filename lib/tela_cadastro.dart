@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class CadastroScreen extends StatelessWidget {
   final VoidCallback onCadastroConcluido;
@@ -56,69 +57,85 @@ class CadastroScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisAlignment: MainAxisAlignment.start, // Alinha no topo
             children: [
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: const Text(
-                  'Cadastro',
-                  style: TextStyle(
+              Card(
+                elevation: 2,
+                child: Text(
+                  'CADASTRO',
+                  style: GoogleFonts.roboto(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xff000000),
+                    letterSpacing: -0.64,
                   ),
                   textAlign: TextAlign.center,
                 ),
               ),
               const SizedBox(height: 24),
-              TextField(
-                controller: _nomeController,
-                decoration: _inputDecoration('Nome'),
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: _emailController,
-                decoration: _inputDecoration('Email'),
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: _senhaController,
-                obscureText: true,
-                decoration: _inputDecoration('Senha'),
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: _confirmarSenhaController,
-                obscureText: true,
-                decoration: _inputDecoration('Confirmar Senha'),
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: () => _cadastrar(context),
-                style: ElevatedButton.styleFrom(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                  backgroundColor: Colors.white,
-                  foregroundColor: const Color(0xFF4682B4),
+              Card(
+                elevation: 2,
+                child: Container(
+                  padding: const EdgeInsets.all(32),
+                  child: Column(
+                    children: [
+                      TextField(
+                        controller: _nomeController,
+                        decoration: InputDecoration(
+                          labelText: 'Nome',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12)
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      TextField(
+                        controller: _emailController,
+                        decoration: InputDecoration(
+                          labelText: 'Email',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12)
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      TextField(
+                        controller: _senhaController,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          labelText: 'Senha',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12)
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      TextField(
+                        controller: _confirmarSenhaController,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          labelText: 'Confirmar Senha',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12)
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      ElevatedButton(
+                        onPressed: () => _cadastrar(context),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 32, vertical: 16),
+                          backgroundColor: Color(0xFF007AFF),
+                          foregroundColor: Colors.white,
+                        ),
+                        child: const Text('Cadastrar'),
+                      ),
+                    ],
+                  ),
                 ),
-                child: const Text('Cadastrar'),
               ),
             ],
           ),
         ),
       ),
-    );
-  }
-
-  InputDecoration _inputDecoration(String label) {
-    return InputDecoration(
-      labelText: label,
-      filled: true,
-      fillColor: Colors.white,
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
     );
   }
 }
