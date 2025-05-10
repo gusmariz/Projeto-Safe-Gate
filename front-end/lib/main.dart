@@ -3,8 +3,27 @@ import 'package:google_fonts/google_fonts.dart';
 import 'tela_historico.dart';
 import 'tela_login.dart';
 import 'tela_alt_senha.dart';
+import 'package:collection/collection.dart';
 
 void main() => runApp(const MyApp());
+
+class HistoricoManager extends ChangeNotifier {
+  final List<ItemHistorico> get historico => [];
+
+  List<ItemHistorico> get historico => _historico;
+
+  void adicionarAcao(String acao) {
+    final now = DateTime.now();
+    final item = ItemHistorico("Joãzinho $acao", "${now.hour}:${now.minute.toString().padLeft(2, '0')}", _getDiaSemana(now.weekday), "${now.day.toString().padLeft(2, '0')}/${now.month.toString().padLeft(2, '0')}/${now.year}",);
+    _historico.add(item);
+    notifyListeners();
+  }
+
+  String _getDiaSemana(int weekday) {
+    const dias = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
+    return dias[weekday % 7];
+  }
+}
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -15,10 +34,13 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   bool _isDarkMode = false;
+  final historicoManager = HistoricoManager();
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return ChangeNotifierProvider(
+      create: (context) => historicoManager,
+      child: MaterialApp(
       title: 'SafeGate',
       debugShowCheckedModeBanner: false,
       theme: _isDarkMode
@@ -44,6 +66,8 @@ class _MyAppState extends State<MyApp> {
         '/telaHistorico': (context) => TelaHistorico(),
         '/telaAltSenha': (context) => TelaAltSenha(),
       },
+      ),
+      
     );
   }
 }
@@ -57,6 +81,55 @@ class MyHomePage extends StatelessWidget {
     required this.onThemeChanged,
     required this.isDarkMode,
   });
+
+  Widget _buildBotaoAcao({
+    required BuildContext context,
+    required String texto,
+    required IconData icone,
+    required VoidCallback onPressed,
+  }) {
+    return Card(
+      color: Theme.of(context).colorScheme.secondaryContainer,
+      elevation: 6,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(4),
+        onTap: onPressed,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 8),
+          child: SizedBox(
+            height: 65,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Icon(icone),
+                Text(
+                  texto,
+                  style: GoogleFonts.roboto(
+                    fontSize: 25.6,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Consumer<HistoricoManager>(
+                  builder: (context, historico, child) {
+                    final count = historico.historico
+                        .where((item) => item.titulo.containts(texto))
+                        .length;
+                    return Text(
+                      '$count',
+                      style: GoogleFonts.inter(
+                        fontSize: 25.6,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -263,37 +336,17 @@ class MyHomePage extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  SizedBox(
-                    width: double.infinity,
-                    height: 65,
-                    child: Card(
-                      color: Theme.of(context).colorScheme.secondaryContainer,
-                      elevation: 6,
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Icon(Icons.lock_open),
-                            Text(
-                              'ABRIR',
-                              style: GoogleFonts.roboto(
-                                fontSize: 25.6,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(
-                              '0',
-                              style: GoogleFonts.inter(
-                                fontSize: 25.6,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
+                  _buildBotaoAcao(
+                      context: context,
+                      texto: 'ABRIR',
+                      icone: Icons.lock_open,
+                      onPressed: () {
+                        historico.adicionarAcao('abriu');
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text('Portão Aberto!'),
+                          duration: Duration(seconds: 2),
+                        ));
+                      }),
                   SizedBox(
                     width: double.infinity,
                     height: 65,
