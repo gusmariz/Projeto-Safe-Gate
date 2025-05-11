@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hello/main.dart';
+import 'package:provider/provider.dart';
 
 class TelaHistorico extends StatelessWidget {
   const TelaHistorico({super.key});
@@ -25,19 +27,15 @@ class TelaHistorico extends StatelessWidget {
 }
 
 class ListaHistorico extends StatelessWidget {
-  ListaHistorico({super.key});
-
-  final List<ItemHistorico> itens = [
-    ItemHistorico("Joãozinho abriu", "13:42", "Terça-feira", "03/05/2025"),
-    ItemHistorico("Joãozinho fechou", "13:43", "Terça-feira", "03/05/2025"),
-  ];
 
   @override
   Widget build(BuildContext context) {
+    final historico = Provider.of<HistoricoManager>(context);
+
     return ListView.builder(
-      itemCount: itens.length,
+      itemCount: historico.historico.length,
       itemBuilder: (context, index) {
-        return ElementoHistorico(item: itens[index]);
+        return ElementoHistorico(item: historico.historico[index]);
       },
     );
   }
@@ -54,9 +52,9 @@ class ItemHistorico {
 
 class ElementoHistorico extends StatelessWidget {
   const ElementoHistorico({super.key, required this.item});
-
+  
   final ItemHistorico item;
-
+  
   @override
   Widget build(BuildContext context) {
     return Card(
