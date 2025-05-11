@@ -63,7 +63,7 @@ class _MyAppState extends State<MyApp> {
                   );
                 },
               ),
-          '/telaHistorico': (context) => TelaHistorico(),
+          '/telaHistorico': (context) => const TelaHistorico(),
           '/telaAltSenha': (context) => TelaAltSenha(),
         },
       ),  
@@ -94,7 +94,7 @@ class MyHomePage extends StatelessWidget {
         borderRadius: BorderRadius.circular(4),
         onTap: onPressed,
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 8),
           child: SizedBox(
             height: 65,
             child: Row(
@@ -194,7 +194,7 @@ class MyHomePage extends StatelessWidget {
               ),
             ),
             Container(
-              margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.secondaryContainer,
                 borderRadius: BorderRadius.circular(12),
@@ -208,7 +208,7 @@ class MyHomePage extends StatelessWidget {
                     color: Theme.of(context).colorScheme.onSecondaryContainer,
                   ),
                 ),
-                leading: CircleAvatar(
+                leading: const CircleAvatar(
                   radius: 28,
                   child: Icon(Icons.person, size: 36),
                 ),
@@ -221,7 +221,7 @@ class MyHomePage extends StatelessWidget {
                 ),
               ),
             ),
-            Divider(height: 2),
+            const Divider(height: 2),
             ListTile(
               leading: Icon(
                 Icons.brightness_6,
@@ -241,13 +241,13 @@ class MyHomePage extends StatelessWidget {
                 activeColor: Theme.of(context).primaryColor,
               ),
             ),
-            Divider(height: 1),
+            const Divider(height: 1),
             ListTile(
               leading: Icon(
                 Icons.lock,
                 color: Colors.grey[700],
               ),
-              title: Text(
+              title: const Text(
                 'Alterar senha',
                 style: TextStyle(
                   fontSize: 20.8,
@@ -257,13 +257,13 @@ class MyHomePage extends StatelessWidget {
                 Navigator.pushNamed(context, '/telaAltSenha');
               },
             ),
-            Divider(height: 1),
+            const Divider(height: 1),
             ListTile(
               leading: Icon(
                 Icons.history,
                 color: Colors.grey[700],
               ),
-              title: Text(
+              title: const Text(
                 'Histórico',
                 style: TextStyle(
                   fontSize: 20.8,
@@ -273,13 +273,13 @@ class MyHomePage extends StatelessWidget {
                 Navigator.pushNamed(context, '/telaHistorico');
               },
             ),
-            Divider(height: 1),
+            const Divider(height: 1),
             ListTile(
               leading: Icon(
                 Icons.exit_to_app,
                 color: Colors.red[400],
               ),
-              title: Text(
+              title: const Text(
                 'Sair',
                 style: TextStyle(
                   fontSize: 20.8,
@@ -330,7 +330,7 @@ class MyHomePage extends StatelessWidget {
                 ),
               ),
             ),
-            Container(
+            SizedBox(
               width: 300,
               height: 225,
               child: Column(
@@ -342,7 +342,7 @@ class MyHomePage extends StatelessWidget {
                       icone: Icons.lock_open,
                       onPressed: () {
                         historico.adicionarAcao('abriu');
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                           content: Text('Portão aberto!'),
                           duration: Duration(seconds: 2),
                         ),);
@@ -353,7 +353,7 @@ class MyHomePage extends StatelessWidget {
                       icone: Icons.lock,
                       onPressed: () {
                         historico.adicionarAcao('fechou');
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                           content: Text('Portão fechado!'),
                           duration: Duration(seconds: 2),
                         ),);
@@ -364,7 +364,7 @@ class MyHomePage extends StatelessWidget {
                       icone: Icons.cancel,
                       onPressed: () {
                         historico.adicionarAcao('parou');
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                           content: Text('Portão parado!'),
                           duration: Duration(seconds: 2),
                         ),);
@@ -379,7 +379,7 @@ class MyHomePage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Padding(
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 child: SizedBox(
                   height: 35,
                   child: Center(
