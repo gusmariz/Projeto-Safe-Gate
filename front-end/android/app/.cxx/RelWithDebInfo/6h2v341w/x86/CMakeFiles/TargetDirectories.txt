@@ -1,0 +1,2 @@
+C:/Users/Gustavo/Projeto-Safe-Gate/front-end/android/app/.cxx/RelWithDebInfo/6h2v341w/x86/CMakeFiles/edit_cache.dir
+C:/Users/Gustavo/Projeto-Safe-Gate/front-end/android/app/.cxx/RelWithDebInfo/6h2v341w/x86/CMakeFiles/rebuild_cache.dir
