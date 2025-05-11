@@ -3,12 +3,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'tela_historico.dart';
 import 'tela_login.dart';
 import 'tela_alt_senha.dart';
-import 'package:collection/collection.dart';
+import 'package:provider/provider.dart';
 
 void main() => runApp(const MyApp());
 
 class HistoricoManager extends ChangeNotifier {
-  final List<ItemHistorico> get historico => [];
+  final List<ItemHistorico> _historico = [];
 
   List<ItemHistorico> get historico => _historico;
 
@@ -41,33 +41,32 @@ class _MyAppState extends State<MyApp> {
     return ChangeNotifierProvider(
       create: (context) => historicoManager,
       child: MaterialApp(
-      title: 'SafeGate',
-      debugShowCheckedModeBanner: false,
-      theme: _isDarkMode
-          ? ThemeData.dark().copyWith(primaryColor: const Color(0xFF002366))
-          : ThemeData.light().copyWith(primaryColor: const Color(0xFF4682B4)),
-      initialRoute: '/',
-      routes: {
-        '/': (context) => LoginScreen(
-              onLoginSuccess: () {
-                Navigator.pushReplacementNamed(context, '/home');
-              },
-            ),
-        '/home': (context) => MyHomePage(
-              isDarkMode: _isDarkMode,
-              onThemeChanged: () {
-                setState(
-                  () {
-                    _isDarkMode = !_isDarkMode;
-                  },
-                );
-              },
-            ),
-        '/telaHistorico': (context) => TelaHistorico(),
-        '/telaAltSenha': (context) => TelaAltSenha(),
-      },
-      ),
-      
+        title: 'SafeGate',
+        debugShowCheckedModeBanner: false,
+        theme: _isDarkMode
+            ? ThemeData.dark().copyWith(primaryColor: const Color(0xFF002366))
+            : ThemeData.light().copyWith(primaryColor: const Color(0xFF4682B4)),
+        initialRoute: '/',
+        routes: {
+          '/': (context) => LoginScreen(
+                onLoginSuccess: () {
+                  Navigator.pushReplacementNamed(context, '/home');
+                },
+              ),
+          '/home': (context) => MyHomePage(
+                isDarkMode: _isDarkMode,
+                onThemeChanged: () {
+                  setState(
+                    () {
+                      _isDarkMode = !_isDarkMode;
+                    },
+                  );
+                },
+              ),
+          '/telaHistorico': (context) => TelaHistorico(),
+          '/telaAltSenha': (context) => TelaAltSenha(),
+        },
+      ),  
     );
   }
 }
@@ -112,7 +111,7 @@ class MyHomePage extends StatelessWidget {
                 Consumer<HistoricoManager>(
                   builder: (context, historico, child) {
                     final count = historico.historico
-                        .where((item) => item.titulo.containts(texto))
+                        .where((item) => item.titulo.contains(texto))
                         .length;
                     return Text(
                       '$count',
@@ -133,6 +132,7 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final historico = Provider.of<HistoricoManager>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
@@ -343,72 +343,32 @@ class MyHomePage extends StatelessWidget {
                       onPressed: () {
                         historico.adicionarAcao('abriu');
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text('Portão Aberto!'),
+                          content: Text('Portão aberto!'),
                           duration: Duration(seconds: 2),
-                        ));
-                      }),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 65,
-                    child: Card(
-                      color: Theme.of(context).colorScheme.secondaryContainer,
-                      elevation: 5,
-                      child: Padding(
-                        padding: EdgeInsets.all(8),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Icon(Icons.lock),
-                            Text(
-                              'FECHAR',
-                              style: GoogleFonts.roboto(
-                                fontSize: 25.6,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(
-                              '0',
-                              style: GoogleFonts.inter(
-                                fontSize: 25.6,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 65,
-                    child: Card(
-                      color: Theme.of(context).colorScheme.secondaryContainer,
-                      elevation: 5,
-                      child: Padding(
-                        padding: EdgeInsets.all(8),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Icon(Icons.cancel),
-                            Text(
-                              'PARAR',
-                              style: GoogleFonts.roboto(
-                                fontSize: 25.6,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(
-                              '0',
-                              style: GoogleFonts.inter(
-                                fontSize: 25.6,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
+                        ),);
+                      },),
+                  _buildBotaoAcao(
+                      context: context,
+                      texto: 'FECHAR',
+                      icone: Icons.lock,
+                      onPressed: () {
+                        historico.adicionarAcao('fechou');
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text('Portão fechado!'),
+                          duration: Duration(seconds: 2),
+                        ),);
+                      },),
+                  _buildBotaoAcao(
+                      context: context,
+                      texto: 'PARAR',
+                      icone: Icons.cancel,
+                      onPressed: () {
+                        historico.adicionarAcao('parou');
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text('Portão parado!'),
+                          duration: Duration(seconds: 2),
+                        ),);
+                      },),
                 ],
               ),
             ),
