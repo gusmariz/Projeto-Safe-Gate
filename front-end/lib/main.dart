@@ -3,8 +3,27 @@ import 'package:google_fonts/google_fonts.dart';
 import 'tela_historico.dart';
 import 'tela_login.dart';
 import 'tela_alt_senha.dart';
+import 'package:provider/provider.dart';
 
 void main() => runApp(const MyApp());
+
+class HistoricoManager extends ChangeNotifier {
+  final List<ItemHistorico> _historico = [];
+
+  List<ItemHistorico> get historico => _historico;
+
+  void adicionarAcao(String acao) {
+    final now = DateTime.now();
+    final item = ItemHistorico("Joãzinho $acao", "${now.hour}:${now.minute.toString().padLeft(2, '0')}", _getDiaSemana(now.weekday), "${now.day.toString().padLeft(2, '0')}/${now.month.toString().padLeft(2, '0')}/${now.year}",);
+    _historico.add(item);
+    notifyListeners();
+  }
+
+  String _getDiaSemana(int weekday) {
+    const dias = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
+    return dias[weekday % 7];
+  }
+}
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -15,35 +34,39 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   bool _isDarkMode = false;
+  final historicoManager = HistoricoManager();
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'SafeGate',
-      debugShowCheckedModeBanner: false,
-      theme: _isDarkMode
-          ? ThemeData.dark().copyWith(primaryColor: const Color(0xFF002366))
-          : ThemeData.light().copyWith(primaryColor: const Color(0xFF4682B4)),
-      initialRoute: '/',
-      routes: {
-        '/': (context) => LoginScreen(
-              onLoginSuccess: () {
-                Navigator.pushReplacementNamed(context, '/home');
-              },
-            ),
-        '/home': (context) => MyHomePage(
-              isDarkMode: _isDarkMode,
-              onThemeChanged: () {
-                setState(
-                  () {
-                    _isDarkMode = !_isDarkMode;
-                  },
-                );
-              },
-            ),
-        '/telaHistorico': (context) => TelaHistorico(),
-        '/telaAltSenha': (context) => TelaAltSenha(),
-      },
+    return ChangeNotifierProvider(
+      create: (context) => historicoManager,
+      child: MaterialApp(
+        title: 'SafeGate',
+        debugShowCheckedModeBanner: false,
+        theme: _isDarkMode
+            ? ThemeData.dark().copyWith(primaryColor: const Color(0xFF002366))
+            : ThemeData.light().copyWith(primaryColor: const Color(0xFF4682B4)),
+        initialRoute: '/',
+        routes: {
+          '/': (context) => LoginScreen(
+                onLoginSuccess: () {
+                  Navigator.pushReplacementNamed(context, '/home');
+                },
+              ),
+          '/home': (context) => MyHomePage(
+                isDarkMode: _isDarkMode,
+                onThemeChanged: () {
+                  setState(
+                    () {
+                      _isDarkMode = !_isDarkMode;
+                    },
+                  );
+                },
+              ),
+          '/telaHistorico': (context) => TelaHistorico(),
+          '/telaAltSenha': (context) => TelaAltSenha(),
+        },
+      ),  
     );
   }
 }
@@ -58,8 +81,58 @@ class MyHomePage extends StatelessWidget {
     required this.isDarkMode,
   });
 
+  Widget _buildBotaoAcao({
+    required BuildContext context,
+    required String texto,
+    required IconData icone,
+    required VoidCallback onPressed,
+  }) {
+    return Card(
+      color: Theme.of(context).colorScheme.secondaryContainer,
+      elevation: 6,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(4),
+        onTap: onPressed,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 8),
+          child: SizedBox(
+            height: 65,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Icon(icone),
+                Text(
+                  texto,
+                  style: GoogleFonts.roboto(
+                    fontSize: 25.6,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Consumer<HistoricoManager>(
+                  builder: (context, historico, child) {
+                    final count = historico.historico
+                        .where((item) => item.titulo.contains(texto))
+                        .length;
+                    return Text(
+                      '$count',
+                      style: GoogleFonts.inter(
+                        fontSize: 25.6,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final historico = Provider.of<HistoricoManager>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
@@ -263,99 +336,39 @@ class MyHomePage extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  SizedBox(
-                    width: double.infinity,
-                    height: 65,
-                    child: Card(
-                      color: Theme.of(context).colorScheme.secondaryContainer,
-                      elevation: 6,
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Icon(Icons.lock_open),
-                            Text(
-                              'ABRIR',
-                              style: GoogleFonts.roboto(
-                                fontSize: 25.6,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(
-                              '0',
-                              style: GoogleFonts.inter(
-                                fontSize: 25.6,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 65,
-                    child: Card(
-                      color: Theme.of(context).colorScheme.secondaryContainer,
-                      elevation: 5,
-                      child: Padding(
-                        padding: EdgeInsets.all(8),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Icon(Icons.lock),
-                            Text(
-                              'FECHAR',
-                              style: GoogleFonts.roboto(
-                                fontSize: 25.6,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(
-                              '0',
-                              style: GoogleFonts.inter(
-                                fontSize: 25.6,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 65,
-                    child: Card(
-                      color: Theme.of(context).colorScheme.secondaryContainer,
-                      elevation: 5,
-                      child: Padding(
-                        padding: EdgeInsets.all(8),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Icon(Icons.cancel),
-                            Text(
-                              'PARAR',
-                              style: GoogleFonts.roboto(
-                                fontSize: 25.6,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(
-                              '0',
-                              style: GoogleFonts.inter(
-                                fontSize: 25.6,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
+                  _buildBotaoAcao(
+                      context: context,
+                      texto: 'ABRIR',
+                      icone: Icons.lock_open,
+                      onPressed: () {
+                        historico.adicionarAcao('abriu');
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text('Portão aberto!'),
+                          duration: Duration(seconds: 2),
+                        ),);
+                      },),
+                  _buildBotaoAcao(
+                      context: context,
+                      texto: 'FECHAR',
+                      icone: Icons.lock,
+                      onPressed: () {
+                        historico.adicionarAcao('fechou');
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text('Portão fechado!'),
+                          duration: Duration(seconds: 2),
+                        ),);
+                      },),
+                  _buildBotaoAcao(
+                      context: context,
+                      texto: 'PARAR',
+                      icone: Icons.cancel,
+                      onPressed: () {
+                        historico.adicionarAcao('parou');
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text('Portão parado!'),
+                          duration: Duration(seconds: 2),
+                        ),);
+                      },),
                 ],
               ),
             ),
