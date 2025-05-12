@@ -14,13 +14,26 @@ class HistoricoManager extends ChangeNotifier {
 
   void adicionarAcao(String acao) {
     final now = DateTime.now();
-    final item = ItemHistorico("Joãzinho $acao", "${now.hour}:${now.minute.toString().padLeft(2, '0')}", _getDiaSemana(now.weekday), "${now.day.toString().padLeft(2, '0')}/${now.month.toString().padLeft(2, '0')}/${now.year}",);
+    final item = ItemHistorico(
+      "Joãozinho $acao",
+      "${now.hour}:${now.minute.toString().padLeft(2, '0')}",
+      _getDiaSemana(now.weekday),
+      "${now.day.toString().padLeft(2, '0')}/${now.month.toString().padLeft(2, '0')}/${now.year}",
+    );
     _historico.add(item);
     notifyListeners();
   }
 
   String _getDiaSemana(int weekday) {
-    const dias = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
+    const dias = [
+      'Domingo',
+      'Segunda-feira',
+      'Terça-feira',
+      'Quarta-feira',
+      'Quinta-feira',
+      'Sexta-feira',
+      'Sábado'
+    ];
     return dias[weekday % 7];
   }
 }
@@ -66,7 +79,7 @@ class _MyAppState extends State<MyApp> {
           '/telaHistorico': (context) => const TelaHistorico(),
           '/telaAltSenha': (context) => TelaAltSenha(),
         },
-      ),  
+      ),
     );
   }
 }
@@ -337,38 +350,29 @@ class MyHomePage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   _buildBotaoAcao(
-                      context: context,
-                      texto: 'ABRIR',
-                      icone: Icons.lock_open,
-                      onPressed: () {
-                        historico.adicionarAcao('abriu');
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content: Text('Portão aberto!'),
-                          duration: Duration(seconds: 2),
-                        ),);
-                      },),
+                    context: context,
+                    texto: 'ABRIR',
+                    icone: Icons.lock_open,
+                    onPressed: () {
+                      historico.adicionarAcao('abriu');
+                    },
+                  ),
                   _buildBotaoAcao(
-                      context: context,
-                      texto: 'FECHAR',
-                      icone: Icons.lock,
-                      onPressed: () {
-                        historico.adicionarAcao('fechou');
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content: Text('Portão fechado!'),
-                          duration: Duration(seconds: 2),
-                        ),);
-                      },),
+                    context: context,
+                    texto: 'FECHAR',
+                    icone: Icons.lock,
+                    onPressed: () {
+                      historico.adicionarAcao('fechou');
+                    },
+                  ),
                   _buildBotaoAcao(
-                      context: context,
-                      texto: 'PARAR',
-                      icone: Icons.cancel,
-                      onPressed: () {
-                        historico.adicionarAcao('parou');
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content: Text('Portão parado!'),
-                          duration: Duration(seconds: 2),
-                        ),);
-                      },),
+                    context: context,
+                    texto: 'PARAR',
+                    icone: Icons.cancel,
+                    onPressed: () {
+                      historico.adicionarAcao('parou');
+                    },
+                  ),
                 ],
               ),
             ),
@@ -380,20 +384,42 @@ class MyHomePage extends StatelessWidget {
               ),
               child: Padding(
                 padding: const EdgeInsets.all(16),
-                child: SizedBox(
-                  height: 35,
-                  child: Center(
-                    child: Text(
-                      'Último registro: 13:15 | Quinta-feira | 16 Abril 2025',
-                      style: GoogleFonts.inter(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
+                child: Consumer<HistoricoManager>(
+                  builder: (context, historico, child) {
+                    if (historico.historico.isEmpty) {
+                      return const SizedBox(
+                        height: 35,
+                        child: Center(
+                          child: Text(
+                            'Nenhuma ação registrada',
+                            style: TextStyle(
+                              fontSize: 24,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+
+                    final ultimo = historico.historico.last;
+                    final acao = ultimo.titulo.replaceAll('Joãozinho', '');
+
+                    return SizedBox(
+                      height: 35,
+                      child: Center(
+                        child: Text(
+                          'Último: registro: Portão$acao às ${ultimo.hora} | ${ultimo.dia} | ${ultimo.data}',
+                          style: GoogleFonts.inter(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
                       ),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
-                  ),
+                    );
+                  },
                 ),
               ),
             ),
