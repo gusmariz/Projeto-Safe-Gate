@@ -11,3 +11,7 @@ app.post("/home", (req, res) => {
     console.log("Usuário abriu");
     res.json(200).json({ status: "recebido" });
 })
+
+app.listen(PORT, () => {
+    console.log(`Servidor rodando na porta ${PORT}`);
+})
