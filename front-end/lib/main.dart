@@ -9,10 +9,46 @@ void main() => runApp(const MyApp());
 
 class HistoricoManager extends ChangeNotifier {
   final List<ItemHistorico> _historico = [];
+  int _aberturas = 0;
+  int _fechamentos = 0;
+  int _paradas = 0;
+  String? _ultimaAcao;
+  DateTime? _ultimaAcaoTimestamp;
 
   List<ItemHistorico> get historico => _historico;
+  int get totalAcoes => _aberturas + _fechamentos + _paradas;
+  int get aberturas => _aberturas;
+  int get fechamentos => _fechamentos;
+  int get paradas => _paradas;
+
+  bool podeRealizarAcao(String novaAcao) {
+    if (_ultimaAcao == null) return true;
+
+    final podeRepetir = DateTime.now().difference(_ultimaAcaoTimestamp!) > const Duration(seconds: 30);
+
+    return _ultimaAcao != novaAcao || podeRepetir;
+  }
+
+  int getContador(String tipoAcao) {
+    switch (tipoAcao.toLowerCase()) {
+      case 'abriu':
+        return _aberturas;
+      case 'fechou':
+        return _fechamentos;
+      case 'parou':
+        return _paradas;
+      default:
+        return 0;
+    }
+  }
 
   void adicionarAcao(String acao) {
+    if (!podeRealizarAcao(acao)) {
+      return;
+    }
+
+    _ultimaAcaoTimestamp = DateTime.now();
+
     final now = DateTime.now();
     final item = ItemHistorico(
       "Joãozinho $acao",
@@ -20,7 +56,22 @@ class HistoricoManager extends ChangeNotifier {
       _getDiaSemana(now.weekday),
       "${now.day.toString().padLeft(2, '0')}/${now.month.toString().padLeft(2, '0')}/${now.year}",
     );
+
     _historico.add(item);
+    _ultimaAcao = acao;
+
+    switch (acao) {
+      case 'abriu':
+        _aberturas++;
+        break;
+      case 'fechou':
+        _fechamentos++;
+        break;
+      case 'parou':
+        _paradas++;
+        break;
+    }
+
     notifyListeners();
   }
 
@@ -98,54 +149,68 @@ class MyHomePage extends StatelessWidget {
     required BuildContext context,
     required String texto,
     required IconData icone,
-    required VoidCallback onPressed,
+    required String acaoTipo,
   }) {
-    return Card(
-      color: Theme.of(context).colorScheme.secondaryContainer,
-      elevation: 6,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(4),
-        onTap: onPressed,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: SizedBox(
-            height: 65,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Icon(icone),
-                Text(
-                  texto,
-                  style: GoogleFonts.roboto(
-                    fontSize: 25.6,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Consumer<HistoricoManager>(
-                  builder: (context, historico, child) {
-                    final count = historico.historico
-                        .where((item) => item.titulo.contains(texto))
-                        .length;
-                    return Text(
-                      '$count',
+    return Consumer<HistoricoManager>(
+      builder: (context, historico, child) {
+        final podeExecutar = historico.podeRealizarAcao(acaoTipo);
+
+        return Card(
+          color: podeExecutar
+              ? Theme.of(context).colorScheme.secondaryContainer
+              : Colors.grey.withOpacity(0.5),
+          elevation: 6,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(4),
+            onTap: podeExecutar
+                ? () {
+                    historico.adicionarAcao(acaoTipo);
+                  }
+                : () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Ação bloqueada: Portão já $acaoTipo'),
+                      duration: const Duration(seconds: 1),
+                    )
+                  );
+                },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: SizedBox(
+                height: 65,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Icon(icone, color: podeExecutar ? null : Colors.grey),
+                    Text(
+                      texto,
+                      style: GoogleFonts.roboto(
+                        fontSize: 25.6,
+                        fontWeight: FontWeight.bold,
+                        color: podeExecutar ? null : Colors.grey,
+                      ),
+                    ),
+                    Text(
+                      '${historico.getContador(acaoTipo)}',
                       style: GoogleFonts.inter(
                         fontSize: 25.6,
                         fontWeight: FontWeight.w600,
+
+                        color: podeExecutar ? null : Colors.grey,
                       ),
-                    );
-                  },
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final historico = Provider.of<HistoricoManager>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
@@ -318,27 +383,31 @@ class MyHomePage extends StatelessWidget {
                 elevation: 5,
                 child: Padding(
                   padding: const EdgeInsets.all(8),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Text(
-                        'Total de vezes utilizado',
-                        style: GoogleFonts.roboto(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Text(
-                        '0',
-                        style: GoogleFonts.inter(
-                          fontSize: 64,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
+                  child: Consumer<HistoricoManager>(
+                    builder: (context, historico, child) {
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Text(
+                            'Total de vezes utilizado',
+                            style: GoogleFonts.roboto(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Text(
+                            '${historico.totalAcoes}',
+                            style: GoogleFonts.inter(
+                              fontSize: 64,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      );
+                    },
                   ),
                 ),
               ),
@@ -353,25 +422,19 @@ class MyHomePage extends StatelessWidget {
                     context: context,
                     texto: 'ABRIR',
                     icone: Icons.lock_open,
-                    onPressed: () {
-                      historico.adicionarAcao('abriu');
-                    },
+                    acaoTipo: 'abriu',
                   ),
                   _buildBotaoAcao(
                     context: context,
                     texto: 'FECHAR',
                     icone: Icons.lock,
-                    onPressed: () {
-                      historico.adicionarAcao('fechou');
-                    },
+                    acaoTipo: 'fechou',
                   ),
                   _buildBotaoAcao(
                     context: context,
                     texto: 'PARAR',
                     icone: Icons.cancel,
-                    onPressed: () {
-                      historico.adicionarAcao('parou');
-                    },
+                    acaoTipo: 'parou',
                   ),
                 ],
               ),
