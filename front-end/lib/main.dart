@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'tela_historico.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'tela_login.dart';
 import 'tela_alt_senha.dart';
-import 'package:provider/provider.dart';
+import 'tela_historico.dart';
 
 void main() => runApp(const MyApp());
 
@@ -37,10 +39,27 @@ class HistoricoManager extends ChangeNotifier {
     }
   }
 
-  void adicionarAcao(String acao) {
+  Future<void> adicionarAcao(String acao) async {
     if (!podeRealizarAcao(acao)) {
       return;
     }
+
+    try {
+      final res = await http.post(
+        Uri.parse('http://localhost:3000/home'),
+        headers: {'Content-type': 'application/json'},
+        body: jsonEncode({'acao': acao}),
+    );
+
+      if (res.statusCode == 200) {
+        print('Ação enviada com sucesso');
+      } else {
+        print('Erro ao enviar ação: ${res.statusCode}');
+      }
+    } catch (error) {
+      print('Erro de conexão: $error');
+    }
+    
 
     final now = DateTime.now();
     final item = ItemHistorico(
