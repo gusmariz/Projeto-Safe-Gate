@@ -13,7 +13,6 @@ class HistoricoManager extends ChangeNotifier {
   int _fechamentos = 0;
   int _paradas = 0;
   String? _ultimaAcao;
-  DateTime? _ultimaAcaoTimestamp;
 
   List<ItemHistorico> get historico => _historico;
   int get totalAcoes => _aberturas + _fechamentos + _paradas;
@@ -22,11 +21,7 @@ class HistoricoManager extends ChangeNotifier {
   int get paradas => _paradas;
 
   bool podeRealizarAcao(String novaAcao) {
-    if (_ultimaAcao == null) return true;
-
-    final podeRepetir = DateTime.now().difference(_ultimaAcaoTimestamp!) > const Duration(seconds: 30);
-
-    return _ultimaAcao != novaAcao || podeRepetir;
+    return _ultimaAcao == null || _ultimaAcao != novaAcao;
   }
 
   int getContador(String tipoAcao) {
@@ -46,8 +41,6 @@ class HistoricoManager extends ChangeNotifier {
     if (!podeRealizarAcao(acao)) {
       return;
     }
-
-    _ultimaAcaoTimestamp = DateTime.now();
 
     final now = DateTime.now();
     final item = ItemHistorico(
@@ -156,9 +149,7 @@ class MyHomePage extends StatelessWidget {
         final podeExecutar = historico.podeRealizarAcao(acaoTipo);
 
         return Card(
-          color: podeExecutar
-              ? Theme.of(context).colorScheme.secondaryContainer
-              : Colors.grey.withOpacity(0.5),
+          color: Theme.of(context).colorScheme.secondaryContainer,
           elevation: 6,
           child: InkWell(
             borderRadius: BorderRadius.circular(4),
@@ -181,13 +172,12 @@ class MyHomePage extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Icon(icone, color: podeExecutar ? null : Colors.grey),
+                    Icon(icone),
                     Text(
                       texto,
                       style: GoogleFonts.roboto(
                         fontSize: 25.6,
                         fontWeight: FontWeight.bold,
-                        color: podeExecutar ? null : Colors.grey,
                       ),
                     ),
                     Text(
@@ -195,8 +185,6 @@ class MyHomePage extends StatelessWidget {
                       style: GoogleFonts.inter(
                         fontSize: 25.6,
                         fontWeight: FontWeight.w600,
-
-                        color: podeExecutar ? null : Colors.grey,
                       ),
                     ),
                   ],
