@@ -16,7 +16,7 @@ class HistoricoManager extends ChangeNotifier {
   int _paradas = 0;
   String? _ultimaAcao;
 
-  List<ItemHistorico> get historico => _historico;
+  List<ItemHistorico> get historico => _historico.reversed.toList();
   int get totalAcoes => _aberturas + _fechamentos + _paradas;
   int get aberturas => _aberturas;
   int get fechamentos => _fechamentos;
@@ -471,7 +471,7 @@ class MyHomePage extends StatelessWidget {
                       );
                     }
 
-                    final ultimo = historico.historico.last;
+                    final ultimo = historico.historico.first;
                     final acao = ultimo.titulo.replaceAll('Joãozinho', '');
 
                     return SizedBox(
