@@ -16,7 +16,7 @@ class HistoricoManager extends ChangeNotifier {
   int _paradas = 0;
   String? _ultimaAcao;
 
-  List<ItemHistorico> get historico => _historico.reversed.toList();
+  List<ItemHistorico> get historico => List.from(_historico.reversed);
   int get totalAcoes => _aberturas + _fechamentos + _paradas;
   int get aberturas => _aberturas;
   int get fechamentos => _fechamentos;
@@ -49,7 +49,7 @@ class HistoricoManager extends ChangeNotifier {
         Uri.parse('http://localhost:3000/home'),
         headers: {'Content-type': 'application/json'},
         body: jsonEncode({'acao': acao}),
-    );
+      );
 
       if (res.statusCode == 200) {
         print('Ação enviada com sucesso');
@@ -59,7 +59,6 @@ class HistoricoManager extends ChangeNotifier {
     } catch (error) {
       print('Erro de conexão: $error');
     }
-    
 
     final now = DateTime.now();
     final item = ItemHistorico(
@@ -85,6 +84,39 @@ class HistoricoManager extends ChangeNotifier {
     }
 
     notifyListeners();
+  }
+
+  void removerItem(ItemHistorico item) {
+    final index = historico.indexWhere((i) =>
+        i.titulo == item.titulo &&
+        i.hora == item.hora &&
+        i.dia == item.dia &&
+        i.data == item.data);
+
+    if (index != -1) {
+      final itemRemovido = _historico.removeAt(index);
+      final acao = itemRemovido.titulo.replaceAll('Joãozinho', '').trim();
+
+      switch (acao) {
+        case 'abriu':
+          _aberturas--;
+          break;
+        case 'fechou':
+          _fechamentos--;
+          break;
+        case 'parou':
+          _paradas--;
+          break;
+      }
+
+      if (_historico.isEmpty) {
+        _ultimaAcao = null;
+      } else if (_historico.last.titulo.contains(acao)) {
+        _ultimaAcao = acao;
+      }
+
+      notifyListeners();
+    }
   }
 
   String _getDiaSemana(int weekday) {
@@ -140,7 +172,7 @@ class _MyAppState extends State<MyApp> {
                 },
               ),
           '/telaHistorico': (context) => const TelaHistorico(),
-          '/telaAltSenha': (context) => TelaAltSenha(),
+          '/telaAltSenha': (context) => const TelaAltSenha(),
         },
       ),
     );
@@ -177,13 +209,11 @@ class MyHomePage extends StatelessWidget {
                     historico.adicionarAcao(acaoTipo);
                   }
                 : () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text('Ação bloqueada: Portão já $acaoTipo'),
                       duration: const Duration(seconds: 1),
-                    )
-                  );
-                },
+                    ));
+                  },
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: SizedBox(

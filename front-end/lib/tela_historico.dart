@@ -12,12 +12,13 @@ class TelaHistorico extends StatelessWidget {
         title: const Text('Histórico de ações'),
         centerTitle: true,
       ),
-      body: ListaHistorico(),
+      body: const ListaHistorico(),
     );
   }
 }
 
 class ListaHistorico extends StatelessWidget {
+  const ListaHistorico({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -43,11 +44,13 @@ class ItemHistorico {
 
 class ElementoHistorico extends StatelessWidget {
   const ElementoHistorico({super.key, required this.item});
-  
+
   final ItemHistorico item;
-  
+
   @override
   Widget build(BuildContext context) {
+    final historico = Provider.of<HistoricoManager>(context, listen: false);
+
     return Card(
       color: Theme.of(context).colorScheme.secondaryContainer,
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -74,8 +77,18 @@ class ElementoHistorico extends StatelessWidget {
             )
           ],
         ),
-        trailing: const Icon(Icons.chevron_right),
-        onTap: () {},
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.delete, color: Colors.red),
+              onPressed: () {
+                historico.removerItem(item);
+              },
+            ),
+            const Icon(Icons.chevron_right),
+          ],
+        ),
       ),
     );
   }
