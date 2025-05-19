@@ -10,16 +10,7 @@ class TelaHistorico extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Histórico de ações'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.filter_list),
-            onPressed: () {},
-          ),
-        ],
+        centerTitle: true,
       ),
       body: ListaHistorico(),
     );
