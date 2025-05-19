@@ -3,14 +3,25 @@ import 'package:google_fonts/google_fonts.dart';
 import 'tela_cadastro.dart'; // Importa a tela de cadastro
 import 'tela_alt_senha.dart'; // Importa a tela de alteração de senha
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   final VoidCallback onLoginSuccess; // Função callback para quando o login for bem-sucedido
 
-  LoginScreen({super.key, required this.onLoginSuccess});
+  const LoginScreen({super.key, required this.onLoginSuccess});
 
-  // Controladores dos campos de texto
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _senhaController = TextEditingController();
+  bool _esconderTexto = true;
+
+  void _alternarVisibilidadeTexto() {
+    setState(() {
+      _esconderTexto = !_esconderTexto;
+    });
+  }
 
   // Função que verifica se o login é válido
   void _login(BuildContext context) {
@@ -19,7 +30,7 @@ class LoginScreen extends StatelessWidget {
 
     // Verifica se o email e a senha estão corretos (simples validação)
     if (email == 'admin' && senha == '1234') {
-      onLoginSuccess(); // Chama a função de sucesso
+      widget.onLoginSuccess(); // Chama a função de sucesso
     } else {
       // Exibe mensagem de erro se as credenciais forem inválidas
       ScaffoldMessenger.of(context).showSnackBar(
@@ -47,7 +58,7 @@ class LoginScreen extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => TelaAltSenha(),
+        builder: (_) => const TelaAltSenha(),
       ),
     );
   }
@@ -72,7 +83,7 @@ class LoginScreen extends StatelessWidget {
                 const SizedBox(height: 40),
 
                 // IMAGEM NO TOPO DA TELA (PARTE AZUL)
-                CircleAvatar(
+                const CircleAvatar(
                   radius: 60, // raio do círculo
                   backgroundImage: AssetImage('assets/safe-gate-img.png'), // imagem carregada
                   backgroundColor: Colors.transparent, // fundo transparente
@@ -118,11 +129,15 @@ class LoginScreen extends StatelessWidget {
                         // CAMPO DE SENHA
                         TextField(
                           controller: _senhaController, // Controlador do campo
-                          obscureText: true, // Esconde a senha
+                          obscureText: _esconderTexto, // Esconde a senha
                           decoration: InputDecoration(
                             labelText: 'Senha', // Rótulo do campo
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12), // Borda arredondada
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            suffixIcon: IconButton(
+                              icon: Icon(_esconderTexto ? Icons.visibility : Icons.visibility_off),
+                              onPressed: _alternarVisibilidadeTexto,
                             ),
                           ),
                         ),
