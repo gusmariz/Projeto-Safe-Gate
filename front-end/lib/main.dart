@@ -133,6 +133,51 @@ class HistoricoManager extends ChangeNotifier {
   }
 }
 
+class AuthManager extends ChangeNotifier {
+  String ? _token;
+  bool get isAuthenticated => _token != null;
+
+  Future<void> login(String email, String senha) async {
+    try {
+      final response = await http.post(
+        Uri.parse('http://localhost/auth/login'),
+        headers: {'Content-type': 'application/json'},
+          body: jsonEncode({'email': email, 'senha': senha}),
+      );
+
+      if (response.statusCode == 200) {
+        _token = jsonDecode(response.body)['token'];
+        notifyListeners();
+      } else {
+        throw Exception('Credenciais inválidas');
+      }
+    } catch (error) {
+      throw Exception('Erro ao fazer login: $error');
+    }
+  }
+
+  Future<void> register(Map<String, String> dados) async {
+    try {
+      final response = await http.post(
+        Uri.parse('http://localhost/auth/register'),
+        headers: {'Content-type': 'application/json'},
+        body: jsonEncode(dados),
+      );
+
+      if (response.statusCode != 201) {
+        throw Exception('Erro ao registrar');
+      }
+    } catch (error) {
+      throw Exception('Erro ao registrar: $error');
+    }
+  }
+
+  void logout() {
+    _token = null;
+    notifyListeners();
+  }
+}
+
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
