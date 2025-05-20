@@ -188,11 +188,15 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   bool _isDarkMode = false;
   final historicoManager = HistoricoManager();
+  final authManager = AuthManager();
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => historicoManager,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => authManager),
+        ChangeNotifierProvider(create: (context) => historicoManager),
+      ],
       child: MaterialApp(
         title: 'SafeGate',
         debugShowCheckedModeBanner: false,
