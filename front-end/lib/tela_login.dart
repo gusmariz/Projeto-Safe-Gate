@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hello/main.dart';
 import 'tela_cadastro.dart'; // Importa a tela de cadastro
 import 'tela_alt_senha.dart'; // Importa a tela de alteração de senha
 
@@ -24,17 +26,14 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   // Função que verifica se o login é válido
-  void _login(BuildContext context) {
-    final email = _emailController.text;
-    final senha = _senhaController.text;
-
-    // Verifica se o email e a senha estão corretos (simples validação)
-    if (email == 'admin' && senha == '1234') {
-      widget.onLoginSuccess(); // Chama a função de sucesso
-    } else {
-      // Exibe mensagem de erro se as credenciais forem inválidas
+  void _login(BuildContext context) async {
+    try {
+      final auth = Provider.of<AuthManager>(context, listen: false);
+      await auth.login(_emailController.text, _senhaController.text);
+      widget.onLoginSuccess();
+    } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Credenciais inválidas')),
+        SnackBar(content: Text(error.toString())),
       );
     }
   }

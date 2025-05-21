@@ -140,7 +140,7 @@ class AuthManager extends ChangeNotifier {
   Future<void> login(String email, String senha) async {
     try {
       final response = await http.post(
-        Uri.parse('http://localhost/auth/login'),
+        Uri.parse('http://localhost:3000/auth/login'),
         headers: {'Content-type': 'application/json'},
           body: jsonEncode({'email': email, 'senha': senha}),
       );
@@ -159,7 +159,7 @@ class AuthManager extends ChangeNotifier {
   Future<void> register(Map<String, String> dados) async {
     try {
       final response = await http.post(
-        Uri.parse('http://localhost/auth/register'),
+        Uri.parse('http://localhost:3000/auth/register'),
         headers: {'Content-type': 'application/json'},
         body: jsonEncode(dados),
       );

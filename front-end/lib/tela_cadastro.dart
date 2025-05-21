@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hello/main.dart';
+import 'package:provider/provider.dart';
 
 class CadastroScreen extends StatelessWidget {
   final VoidCallback onCadastroConcluido;
@@ -13,37 +15,26 @@ class CadastroScreen extends StatelessWidget {
   final _senhaController = TextEditingController();
   final _confirmarSenhaController = TextEditingController();
 
-  void _cadastrar(BuildContext context) {
-    final nome = _nomeController.text;
-    final cpf = _cpfController.text;
-    final telefone = _telefoneController.text;
-    final email = _emailController.text;
-    final senha = _senhaController.text;
-    final confirmarSenha = _confirmarSenhaController.text;
+  void _cadastrar(BuildContext context) async {
+    try {
+      final auth = Provider.of<AuthManager>(context, listen: false);
+      await auth.register({
+        'nome': _nomeController.text,
+        'email': _emailController.text,
+        'senha': _senhaController.text,
+        'cpf': _cpfController.text,
+        'telefone': _telefoneController.text,
+      });
 
-    if (nome.isEmpty ||
-        cpf.isEmpty ||
-        telefone.isEmpty ||
-        email.isEmpty ||
-        senha.isEmpty ||
-        confirmarSenha.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Preencha todos os campos')),
+        const SnackBar(content: Text('Cadastro realizado com sucesso!')),
       );
-      return;
-    }
-
-    if (senha != confirmarSenha) {
+      onCadastroConcluido();
+    } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('As senhas não coincidem')),
+        SnackBar(content: Text(error.toString())),
       );
-      return;
     }
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Cadastro realizado com sucesso!')),
-    );
-    onCadastroConcluido();
   }
 
   @override
