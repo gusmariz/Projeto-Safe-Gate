@@ -10,6 +10,10 @@ import 'tela_historico.dart';
 void main() => runApp(const MyApp());
 
 class HistoricoManager extends ChangeNotifier {
+  final AuthManager authManager;
+
+  HistoricoManager(this.authManager);
+
   final List<ItemHistorico> _historico = [];
   int _aberturas = 0;
   int _fechamentos = 0;
@@ -28,11 +32,11 @@ class HistoricoManager extends ChangeNotifier {
 
   int getContador(String tipoAcao) {
     switch (tipoAcao.toLowerCase()) {
-      case 'abriu':
+      case 'abrir':
         return _aberturas;
-      case 'fechou':
+      case 'fechar':
         return _fechamentos;
-      case 'parou':
+      case 'parar':
         return _paradas;
       default:
         return 0;
@@ -44,20 +48,31 @@ class HistoricoManager extends ChangeNotifier {
       return;
     }
 
+    if (authManager._token == null) {
+      throw Exception('Usuário não autenticado');
+    }
+
     try {
+      final token = authManager._token;
+
       final res = await http.post(
-        Uri.parse('http://localhost:3000/home'),
-        headers: {'Content-type': 'application/json'},
+        Uri.parse('http://localhost:3000/gate/action'),
+        headers: {
+          'Content-type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
         body: jsonEncode({'acao': acao}),
       );
 
       if (res.statusCode == 200) {
         print('Ação enviada com sucesso');
+        final responseData = jsonDecode(res.body);
+        print(responseData['message']);
       } else {
-        print('Erro ao enviar ação: ${res.statusCode}');
+        throw Exception('Falha ao executar ação');
       }
     } catch (error) {
-      print('Erro de conexão: $error');
+      throw Exception('Erro de conexão: $error');
     }
 
     final now = DateTime.now();
@@ -134,7 +149,7 @@ class HistoricoManager extends ChangeNotifier {
 }
 
 class AuthManager extends ChangeNotifier {
-  String ? _token;
+  String? _token;
   bool get isAuthenticated => _token != null;
 
   Future<void> login(String email, String senha) async {
@@ -142,7 +157,7 @@ class AuthManager extends ChangeNotifier {
       final response = await http.post(
         Uri.parse('http://localhost:3000/auth/login'),
         headers: {'Content-type': 'application/json'},
-          body: jsonEncode({'email': email, 'senha': senha}),
+        body: jsonEncode({'email': email, 'senha': senha}),
       );
 
       if (response.statusCode == 200) {
@@ -187,7 +202,6 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   bool _isDarkMode = false;
-  final historicoManager = HistoricoManager();
   final authManager = AuthManager();
 
   @override
@@ -195,7 +209,9 @@ class _MyAppState extends State<MyApp> {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => authManager),
-        ChangeNotifierProvider(create: (context) => historicoManager),
+        ChangeNotifierProvider(
+          create: (context) => HistoricoManager(authManager),
+        ),
       ],
       child: MaterialApp(
         title: 'SafeGate',
@@ -254,8 +270,15 @@ class MyHomePage extends StatelessWidget {
           child: InkWell(
             borderRadius: BorderRadius.circular(4),
             onTap: podeExecutar
-                ? () {
-                    historico.adicionarAcao(acaoTipo);
+                ? () async {
+                    try {
+                      await historico.adicionarAcao(acaoTipo);
+                    } catch (error) {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text('Erro: ${error.toString()}'),
+                        duration: const Duration(seconds: 1),
+                      ));
+                    }
                   }
                 : () {
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -508,19 +531,19 @@ class MyHomePage extends StatelessWidget {
                     context: context,
                     texto: 'ABRIR',
                     icone: Icons.lock_open,
-                    acaoTipo: 'abriu',
+                    acaoTipo: 'abrir',
                   ),
                   _buildBotaoAcao(
                     context: context,
                     texto: 'FECHAR',
                     icone: Icons.lock,
-                    acaoTipo: 'fechou',
+                    acaoTipo: 'fechar',
                   ),
                   _buildBotaoAcao(
                     context: context,
                     texto: 'PARAR',
                     icone: Icons.cancel,
-                    acaoTipo: 'parou',
+                    acaoTipo: 'parar',
                   ),
                 ],
               ),
