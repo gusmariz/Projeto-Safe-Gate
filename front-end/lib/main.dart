@@ -473,6 +473,7 @@ class MyHomePage extends StatelessWidget {
                 ),
               ),
               onTap: () {
+                Provider.of<AuthManager>(context, listen: false).logout();
                 Navigator.pushReplacementNamed(context, '/');
               },
             ),
