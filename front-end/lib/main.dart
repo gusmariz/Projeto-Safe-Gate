@@ -87,13 +87,13 @@ class HistoricoManager extends ChangeNotifier {
     _ultimaAcao = acao;
 
     switch (acao) {
-      case 'abriu':
+      case 'abrir':
         _aberturas++;
         break;
-      case 'fechou':
+      case 'fechar':
         _fechamentos++;
         break;
-      case 'parou':
+      case 'parar':
         _paradas++;
         break;
     }
