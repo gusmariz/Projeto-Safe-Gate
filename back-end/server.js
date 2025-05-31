@@ -17,6 +17,4 @@ app.use('/admin', adminRoutes);
 
 app.get('/', (req, res) => res.send('API SafeGate Online!'));
 
-app.listen(process.env.PORT, () => {
-  console.log(`Servidor rodando na porta ${process.env.PORT}`);
-});
+const PORT = process.env.PORT || 3000;
