@@ -4,18 +4,24 @@ import pool from '../database/connection.js';
 
 export const register = async (req, res) => {
   try {
-    const { nome, email, senha, cpf, telefone } = req.body;
+    const { nome, email, senha, cpf, telefone, tipo_usuario } = req.body;
+
+    if (!['cliente', 'admin'].includes(tipo_usuario)) {
+      return res.status(400).json({ error: 'Tipo de usuário inválido' });
+    }
+
     const hashedPassword = await bcrypt.hash(senha, 10);
 
-    await pool.query(
-      `INSERT INTO usuarios (nome, email, senha, cpf, telefone) 
-       VALUES (?, ?, ?, ?, ?)`,
-      [nome, email, hashedPassword, cpf, telefone]
-    );
+    await pool.query('CALL inserir_usuario(?, ?, ?, ?, ?, ?)', [
+      nome, cpf, telefone, email, hashedPassword, tipo_usuario
+    ]);
 
     res.status(201).json({ message: 'Usuário criado com sucesso!' });
   } catch (error) {
     console.error("Erro no registro:", error);
+    if (error.code === 'ER_DUP_ENTRY') {
+      return res.status(400).json({ error: 'Email ou CPF já cadastrado' });
+    }
     res.status(500).json({ error: 'Erro no servidor' });
   }
 };
@@ -31,10 +37,49 @@ export const login = async (req, res) => {
     const validPassword = await bcrypt.compare(senha, user.senha);
     if (!validPassword) return res.status(401).json({ error: 'Credenciais inválidas' });
 
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    res.json({ token });
+    const token = jwt.sign(
+      {
+        id: user.id,
+        tipo: user.tipo_usuario
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    res.json({
+      token,
+      user: {
+        id: user.id_usuario,
+        nome: user.nome,
+        email: user.email,
+        tipo: user.tipo_usuario
+      }
+    });
   } catch (error) {
     console.error("Erro no login:", error);
+    res.status(500).json({ error: 'Erro no servidor' });
+  }
+};
+
+export const atualizarUsuario = async (req, res) => {
+  try {
+    const userEmail = req.user.email;
+    const { nome, telefone, senha } = req.body;
+
+    const senhaHash = senha ? await bcrypt.hash(senha, 10) : null;
+
+    await pool.query(
+      `UPDATE usuarios SET
+        nome = COALESCE(?, nome),
+        telefone = COALESCE(?, telefone),
+        senha = COALESCE(?, senha)
+      WHERE email = ?`,
+      [nome, telefone, senhaHash, userEmail]
+    );
+
+    res.json({ message: 'Dados atualizados com sucesso!' });
+  } catch (error) {
+    console.log('Erro ao atualizar usuário:', error);
     res.status(500).json({ error: 'Erro no servidor' });
   }
 };
