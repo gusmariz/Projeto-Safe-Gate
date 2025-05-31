@@ -1,9 +1,14 @@
 {
   "name": "back-end",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "build": "echo 'Build completo' && npm install",
+    "prepare": "npm install"
+  },
+  "engines": {
+    "node": "18.x"
   },
   "keywords": [],
   "author": "",
