@@ -4,10 +4,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "build": "npm install --omit=dev --no-cache --legacy-peer-deps",
-    "preinstall": "node -e \"try { require('fs').rmSync('.npm', { recursive: true, force: true }) } catch(e) {}\"",
-    "postinstall": "rd /s /q .npm",
-    "clean": "node -e \"try { require('fs').rmSync('node_modules', { recursive: true, force: true }) } catch(e) {} \""
+    "build": "tsc"
   },
   "engines": {
     "node": "22.11.0",
