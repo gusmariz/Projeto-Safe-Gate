@@ -4,9 +4,10 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "build": "npm install && echo 'Build completo'",
-    "prepare": "npm install",
-    "test": "echo 'Testes omitidos'"
+    "build": "npm install --no-cache --legacy-peer-deps",
+    "prepare": "npm install --no-cache",
+    "preinstall": "npm config set legacy-peer-deps true",
+    "postinstall": "rd /s /q .npm"
   },
   "engines": {
     "node": "18.x",
