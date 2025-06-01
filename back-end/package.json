@@ -4,14 +4,14 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "build": "npm install --no-cache --legacy-peer-deps",
-    "prepare": "npm install --no-cache",
-    "preinstall": "npm config set legacy-peer-deps true",
-    "postinstall": "rd /s /q .npm"
+    "build": "npm install --omit=dev --no-cache --legacy-peer-deps",
+    "preinstall": "node -e \"try { require('fs').rmSync('.npm', { recursive: true, force: true }) } catch(e) {}\"",
+    "postinstall": "rd /s /q .npm",
+    "clean": "node -e \"try { require('fs').rmSync('node_modules', { recursive: true, force: true }) } catch(e) {} \""
   },
   "engines": {
-    "node": "18.x",
-    "npm": "9.x"
+    "node": "22.11.0",
+    "npm": "11.4.0"
   },
   "keywords": [],
   "author": "",
