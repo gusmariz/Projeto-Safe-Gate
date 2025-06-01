@@ -4,11 +4,13 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "build": "echo 'Build completo' && npm install",
-    "prepare": "npm install"
+    "build": "npm install && echo 'Build completo'",
+    "prepare": "npm install",
+    "test": "echo 'Testes omitidos'"
   },
   "engines": {
-    "node": "18.x"
+    "node": "18.x",
+    "npm": "9.x"
   },
   "keywords": [],
   "author": "",
