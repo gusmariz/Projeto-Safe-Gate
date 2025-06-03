@@ -11,8 +11,44 @@ void main() => runApp(const MyApp());
 
 class HistoricoManager extends ChangeNotifier {
   final AuthManager authManager;
-
   HistoricoManager(this.authManager);
+
+  Future<List<ItemHistorico>> fetchHistory() async {
+    try {
+      final response = await http.get(
+        Uri.parse('https://projeto-safe-gate-production.up.railway.app/gate/history'),
+        headers: {
+          'Authorization': 'Bearer ${authManager._token}',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+        return data
+            .map((item) => ItemHistorico(
+                  item['descricao'] ?? 'Ação no portão',
+                  _formatTime(item['dt_acao']),
+                  _getDiaSemana(DateTime.parse(item['dt_acao']).weekday),
+                  _formatDate(item['dt_acao']),
+                ))
+            .toList();
+      } else {
+        throw Exception('Falha ao carregar histórico');
+      }
+    } catch (error) {
+      throw Exception('Erro de conexão: $error');
+    }
+  }
+
+  String _formatTime(String dateTime) {
+    final dt = DateTime.parse(dateTime);
+    return '${dt.hour}:${dt.minute.toString().padLeft(2, '0')}';
+  }
+
+  String _formatDate(String dateTime) {
+    final dt = DateTime.parse(dateTime);
+    return "${dt.day.toString().padLeft(2, '0')}/${dt.month.toString().padLeft(2, '0')}/${dt.year}";
+  }
 
   final List<ItemHistorico> _historico = [];
   int _aberturas = 0;
@@ -45,7 +81,7 @@ class HistoricoManager extends ChangeNotifier {
 
   Future<void> adicionarAcao(String acao) async {
     if (!podeRealizarAcao(acao)) {
-      return;
+      throw Exception('Ação bloqueada: Portão já $acao');
     }
 
     if (authManager._token == null) {
@@ -53,52 +89,46 @@ class HistoricoManager extends ChangeNotifier {
     }
 
     try {
-      final token = authManager._token;
-
-      final res = await http.post(
-        Uri.parse('http://localhost:3000/gate/action'),
+      final response = await http.post(
+        Uri.parse('https://projeto-safe-gate-production.up.railway.app/gate/action'),
         headers: {
           'Content-type': 'application/json',
-          'Authorization': 'Bearer $token',
+          'Authorization': 'Bearer ${authManager._token}',
         },
-        body: jsonEncode({'acao': acao}),
+        body: jsonEncode({'acao': acao, 'descricao': 'Portão $acao'}),
       );
 
-      if (res.statusCode == 200) {
-        print('Ação enviada com sucesso');
-        final responseData = jsonDecode(res.body);
-        print(responseData['message']);
+      if (response.statusCode == 200) {
+        final now = DateTime.now();
+        final item = ItemHistorico(
+          'Portão $acao',
+          '${now.hour}:${now.minute.toString().padLeft(2, '0')}',
+          _getDiaSemana(now.weekday),
+          '${now.day.toString().padLeft(2, '0')}/${now.month.toString().padLeft(2, '0')}/${now.year}',
+        );
+
+        _historico.add(item);
+        _ultimaAcao = acao;
+
+        switch (acao) {
+          case 'abrir':
+            _aberturas++;
+            break;
+          case 'fechar':
+            _fechamentos++;
+            break;
+          case 'parar':
+            _paradas++;
+            break;
+        }
+        notifyListeners();
       } else {
-        throw Exception('Falha ao executar ação');
+        throw Exception(
+            jsonDecode(response.body)['error'] ?? 'Falha ao executar ação');
       }
     } catch (error) {
       throw Exception('Erro de conexão: $error');
     }
-
-    final now = DateTime.now();
-    final item = ItemHistorico(
-      "Joãozinho $acao",
-      "${now.hour}:${now.minute.toString().padLeft(2, '0')}",
-      _getDiaSemana(now.weekday),
-      "${now.day.toString().padLeft(2, '0')}/${now.month.toString().padLeft(2, '0')}/${now.year}",
-    );
-
-    _historico.add(item);
-    _ultimaAcao = acao;
-
-    switch (acao) {
-      case 'abrir':
-        _aberturas++;
-        break;
-      case 'fechar':
-        _fechamentos++;
-        break;
-      case 'parar':
-        _paradas++;
-        break;
-    }
-
-    notifyListeners();
   }
 
   void removerItem(ItemHistorico item) {
@@ -113,13 +143,13 @@ class HistoricoManager extends ChangeNotifier {
       final acao = itemRemovido.titulo.replaceAll('Joãozinho', '').trim();
 
       switch (acao) {
-        case 'abriu':
+        case 'abrir':
           _aberturas--;
           break;
-        case 'fechou':
+        case 'fechar':
           _fechamentos--;
           break;
-        case 'parou':
+        case 'parar':
           _paradas--;
           break;
       }
@@ -150,45 +180,81 @@ class HistoricoManager extends ChangeNotifier {
 
 class AuthManager extends ChangeNotifier {
   String? _token;
+  Map<String, dynamic>? _user;
+
   bool get isAuthenticated => _token != null;
+  Map<String, dynamic>? get user => _user;
 
   Future<void> login(String email, String senha) async {
     try {
       final response = await http.post(
-        Uri.parse('http://localhost:3000/auth/login'),
+        Uri.parse('https://projeto-safe-gate-production.up.railway.app/auth/login'),
         headers: {'Content-type': 'application/json'},
         body: jsonEncode({'email': email, 'senha': senha}),
       );
 
       if (response.statusCode == 200) {
-        _token = jsonDecode(response.body)['token'];
+        final responseData = jsonDecode(response.body);
+        _token = responseData['token'];
+        _user = responseData['user'];
         notifyListeners();
       } else {
-        throw Exception('Credenciais inválidas');
+        throw Exception(
+            jsonDecode(response.body)['error'] ?? 'Credenciais inválidas');
       }
     } catch (error) {
       throw Exception('Erro ao fazer login: $error');
     }
+    print('Token: $_token');
+    print('User: $_user');
   }
 
   Future<void> register(Map<String, String> dados) async {
     try {
       final response = await http.post(
-        Uri.parse('http://localhost:3000/auth/register'),
+        Uri.parse('https://projeto-safe-gate-production.up.railway.app/auth/register'),
         headers: {'Content-type': 'application/json'},
-        body: jsonEncode(dados),
+        body: jsonEncode({
+          'nome': dados['nome'],
+          'email': dados['email'],
+          'senha': dados['senha'],
+          'cpf': dados['cpf'],
+          'telefone': dados['telefone'],
+          'tipo_usuario': 'cliente'
+        }),
       );
 
       if (response.statusCode != 201) {
-        throw Exception('Erro ao registrar');
+        final errorData = jsonDecode(response.body);
+        throw Exception(errorData['error'] ?? 'Erro ao registrar');
       }
     } catch (error) {
       throw Exception('Erro ao registrar: $error');
     }
   }
 
+  Future<void> updateUser(Map<String, String> dados) async {
+    try {
+      final response = await http.put(
+        Uri.parse('https://projeto-safe-gate-production.up.railway.app/auth/update'),
+        headers: {
+          'Content-type': 'application/json',
+          'Authorization': 'Bearer $_token',
+        },
+        body: jsonEncode(dados),
+      );
+
+      if (response.statusCode != 200) {
+        throw Exception('Erro ao atualizar usuário');
+      }
+    } catch (error) {
+      throw Exception('Erro ao atualizar: $error');
+    }
+  }
+
   void logout() {
     _token = null;
+    _user = null;
     notifyListeners();
   }
 }
@@ -386,24 +452,26 @@ class MyHomePage extends StatelessWidget {
                 color: Theme.of(context).colorScheme.secondaryContainer,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: ListTile(
-                title: Text(
-                  'Joãozinho',
-                  style: TextStyle(
-                    fontSize: 20.8,
-                    fontWeight: FontWeight.w500,
-                    color: Theme.of(context).colorScheme.onSecondaryContainer,
+              child: Consumer<AuthManager>(
+                builder: (context, auth, child) => ListTile(
+                  title: Text(
+                    auth.user?['nome'] ?? 'Usuário',
+                    style: TextStyle(
+                      fontSize: 20.8,
+                      fontWeight: FontWeight.w500,
+                      color: Theme.of(context).colorScheme.onSecondaryContainer,
+                    ),
                   ),
-                ),
-                leading: const CircleAvatar(
-                  radius: 28,
-                  child: Icon(Icons.person, size: 36),
-                ),
-                subtitle: Text(
-                  'Ver perfil',
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontSize: 14,
+                  leading: const CircleAvatar(
+                    radius: 28,
+                    child: Icon(Icons.person, size: 36),
+                  ),
+                  subtitle: Text(
+                    auth.user?['email'] ?? '',
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontSize: 14,
+                    ),
                   ),
                 ),
               ),

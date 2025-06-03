@@ -17,17 +17,42 @@ class TelaHistorico extends StatelessWidget {
   }
 }
 
-class ListaHistorico extends StatelessWidget {
+class ListaHistorico extends StatefulWidget {
   const ListaHistorico({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final historico = Provider.of<HistoricoManager>(context);
+  State<ListaHistorico> createState() => _ListaHistoricoState();
+}
 
-    return ListView.builder(
-      itemCount: historico.historico.length,
-      itemBuilder: (context, index) {
-        return ElementoHistorico(item: historico.historico[index]);
+class _ListaHistoricoState extends State<ListaHistorico> {
+  late Future<List<ItemHistorico>> _futureHistorico;
+
+  @override
+  void initState() {
+    super.initState();
+    _futureHistorico =
+        Provider.of<HistoricoManager>(context, listen: false).fetchHistory();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<List<ItemHistorico>>(
+      future: _futureHistorico,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Erro: ${snapshot.error}'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text('Nenhum histórico encontrado'));
+        }
+
+        return ListView.builder(
+          itemCount: snapshot.data!.length,
+          itemBuilder: (context, index) {
+            return ElementoHistorico(item: snapshot.data![index]);
+          },
+        );
       },
     );
   }
