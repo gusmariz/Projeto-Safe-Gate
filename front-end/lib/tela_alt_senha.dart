@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hello/main.dart';
+import 'package:provider/provider.dart';
 
 class TelaAltSenha extends StatelessWidget {
   const TelaAltSenha({super.key});
@@ -166,14 +168,26 @@ class _MudarSenhaFormState extends State<MudarSenhaForm> {
     );
   }
 
-  void _mudarSenha() {
+  void _mudarSenha() async {
     // Implementa a lógica para alterar a senha
     // Mostra o feedback para o usuário
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Senha alterada com sucesso!')),
-    );
+    if (_formKey.currentState!.validate()) {
+      try {
+        final auth = Provider.of<AuthManager>(context, listen: false);
+        await auth.updateUser({
+          'senha': _novaSenhaContreller.text,
+        });
 
-    // Volta para a tela anterior após o processo concluído
-    Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Senha alterada com sucesso!')),
+        );
+
+        Navigator.pop(context);
+      } catch (error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(error.toString())),
+        );
+      }
+    }
   }
 }
