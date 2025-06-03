@@ -16,7 +16,8 @@ class HistoricoManager extends ChangeNotifier {
   Future<List<ItemHistorico>> fetchHistory() async {
     try {
       final response = await http.get(
-        Uri.parse('https://projeto-safe-gate-production.up.railway.app/gate/history'),
+        Uri.parse(
+            'https://projeto-safe-gate-production.up.railway.app/gate/history'),
         headers: {
           'Authorization': 'Bearer ${authManager._token}',
         },
@@ -90,7 +91,8 @@ class HistoricoManager extends ChangeNotifier {
 
     try {
       final response = await http.post(
-        Uri.parse('https://projeto-safe-gate-production.up.railway.app/gate/action'),
+        Uri.parse(
+            'https://projeto-safe-gate-production.up.railway.app/gate/action'),
         headers: {
           'Content-type': 'application/json',
           'Authorization': 'Bearer ${authManager._token}',
@@ -188,7 +190,8 @@ class AuthManager extends ChangeNotifier {
   Future<void> login(String email, String senha) async {
     try {
       final response = await http.post(
-        Uri.parse('https://projeto-safe-gate-production.up.railway.app/auth/login'),
+        Uri.parse(
+            'https://projeto-safe-gate-production.up.railway.app/auth/login'),
         headers: {'Content-type': 'application/json'},
         body: jsonEncode({'email': email, 'senha': senha}),
       );
@@ -210,16 +213,10 @@ class AuthManager extends ChangeNotifier {
   Future<void> register(Map<String, String> dados) async {
     try {
       final response = await http.post(
-        Uri.parse('https://projeto-safe-gate-production.up.railway.app/auth/register'),
+        Uri.parse(
+            'https://projeto-safe-gate-production.up.railway.app/auth/register'),
         headers: {'Content-type': 'application/json'},
-        body: jsonEncode({
-          'nome': dados['nome'],
-          'email': dados['email'],
-          'senha': dados['senha'],
-          'cpf': dados['cpf'],
-          'telefone': dados['telefone'],
-          'tipo_usuario': 'cliente'
-        }),
+        body: jsonEncode(dados),
       );
 
       if (response.statusCode != 201) {
@@ -234,7 +231,8 @@ class AuthManager extends ChangeNotifier {
   Future<void> updateUser(Map<String, String> dados) async {
     try {
       final response = await http.put(
-        Uri.parse('https://projeto-safe-gate-production.up.railway.app/auth/update'),
+        Uri.parse(
+            'https://projeto-safe-gate-production.up.railway.app/auth/update'),
         headers: {
           'Content-type': 'application/json',
           'Authorization': 'Bearer $_token',
@@ -418,13 +416,13 @@ class MyHomePage extends StatelessWidget {
             DrawerHeader(
               decoration: BoxDecoration(color: Theme.of(context).primaryColor),
               padding: const EdgeInsets.all(16),
-              child: const SizedBox(
+              child: SizedBox(
                 height: 30,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       'Configurações',
                       style: TextStyle(
                         color: Colors.white,
@@ -432,12 +430,14 @@ class MyHomePage extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 8),
-                    Text(
-                      'Olá, Joãozinho!',
-                      style: TextStyle(
-                        fontSize: 18.6,
-                        color: Colors.white,
+                    const SizedBox(height: 8),
+                    Consumer<AuthManager>(
+                      builder: (content, auth, child) => Text(
+                        'Olá, ${auth.user?['nome'] ?? 'Usuário'}!',
+                        style: const TextStyle(
+                          fontSize: 18.6,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ],
