@@ -205,8 +205,6 @@ class AuthManager extends ChangeNotifier {
     } catch (error) {
       throw Exception('Erro ao fazer login: $error');
     }
-    print('Token: $_token');
-    print('User: $_user');
   }
 
   Future<void> register(Map<String, String> dados) async {
