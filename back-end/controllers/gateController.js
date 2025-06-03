@@ -15,7 +15,7 @@ export const controlGate = async (req, res) => {
 
         await pool.query(
             'CALL inserir_registro(?, ?)',
-            [descricao || `Portão ${acao}`, req.user.id]
+            [descricao || `Portão ${acao}`, decoded.id]
         );
 
         res.json({ message: `Portão ${acao} com sucesso!` });
