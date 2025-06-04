@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'tela_login.dart';
 import 'tela_alt_senha.dart';
 import 'tela_historico.dart';
+import 'tela_gestao_users.dart';
 
 void main() => runApp(const MyApp());
 
@@ -182,6 +183,7 @@ class HistoricoManager extends ChangeNotifier {
 
 class AuthManager extends ChangeNotifier {
   String? _token;
+  String? get token => _token;
   Map<String, dynamic>? _user;
 
   bool get isAuthenticated => _token != null;
@@ -300,6 +302,7 @@ class _MyAppState extends State<MyApp> {
               ),
           '/telaHistorico': (context) => const TelaHistorico(),
           '/telaAltSenha': (context) => const TelaAltSenha(),
+          '/tela_gestao_users': (context) => const TelaGestaoUsers(),
         },
       ),
     );
@@ -524,6 +527,14 @@ class MyHomePage extends StatelessWidget {
               ),
               onTap: () {
                 Navigator.pushNamed(context, '/telaHistorico');
+              },
+            ),
+            const Divider(height: 1),
+            ListTile(
+              leading: const Icon(Icons.admin_panel_settings),
+              title: const Text('Gestão de Usuários'),
+              onTap: () {
+                Navigator.pushNamed(context, '/tela_gestao_users');
               },
             ),
             const Divider(height: 1),
