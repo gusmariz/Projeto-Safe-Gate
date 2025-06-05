@@ -14,6 +14,13 @@ export const verifyToken = (req, res, next) => {
 };
 
 export const adminOnly = async (req, res, next) => {
+    console.log('req.user', req.user);
+    console.log('Email usado na query:', req.user.email);
+
+    if (req.user.tipo === 'admin') {
+        return next();
+    }
+
     try {
         const [users] = await pool.query(
             'SELECT tipo_usuario FROM usuarios WHERE email = ?',
