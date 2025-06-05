@@ -13,9 +13,6 @@ class AdminManager {
       headers: {'Authorization': 'Bearer $token'},
     );
 
-    print('Status code: ${response.statusCode}');
-    print('Response body: ${response.body}');
-
     if (response.statusCode == 200) {
       return List<Map<String, dynamic>>.from(jsonDecode(response.body));
     } else {
