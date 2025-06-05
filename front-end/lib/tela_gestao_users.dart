@@ -64,6 +64,7 @@ class _TelaGestaoUsersState extends State<TelaGestaoUsers> {
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthManager>(context);
+    print('Dados usuário: ${auth.user}');
 
     if (auth.user?['tipo'] != 'admin') {
       return Scaffold(
