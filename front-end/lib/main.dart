@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:marquee/marquee.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'tela_login.dart';
@@ -583,14 +584,23 @@ class MyHomePage extends StatelessWidget {
                       return Column(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          Text(
-                            'Total de vezes utilizado',
-                            style: GoogleFonts.roboto(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                          SizedBox(
+                            height: 32,
+                            child: Marquee(
+                              text: 'Total de vezes utilizado',
+                              style: GoogleFonts.roboto(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                              scrollAxis: Axis.horizontal,
+                              velocity: 30.0,
+                              blankSpace: 40.0,
+                              pauseAfterRound: Duration(seconds: 1),
+                              startPadding: 10.0,
+                              accelerationDuration: Duration(seconds: 1),
+                              decelerationDuration: Duration(milliseconds: 500),
                             ),
-                            overflow: TextOverflow.ellipsis,
                           ),
                           Text(
                             '${historico.totalAcoes}',
@@ -661,19 +671,28 @@ class MyHomePage extends StatelessWidget {
 
                     final ultimo = historico.historico.first;
                     final acao = ultimo.titulo.replaceAll('Joãozinho', '');
+                    final texto =
+                        'Último registro: $acao às ${ultimo.hora} | ${ultimo.dia} | ${ultimo.data}';
 
                     return SizedBox(
                       height: 35,
                       child: Center(
-                        child: Text(
-                          'Último: registro: Portão$acao às ${ultimo.hora} | ${ultimo.dia} | ${ultimo.data}',
+                        child: Marquee(
+                          text: texto,
                           style: GoogleFonts.inter(
                             fontSize: 24,
                             fontWeight: FontWeight.w600,
                             color: Colors.white,
                           ),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
+                          scrollAxis: Axis.horizontal,
+                          blankSpace: 40.0,
+                          velocity: 30.0,
+                          pauseAfterRound: Duration(seconds: 1),
+                          startPadding: 10.0,
+                          accelerationDuration: Duration(seconds: 1),
+                          accelerationCurve: Curves.linear,
+                          decelerationDuration: Duration(milliseconds: 500),
+                          decelerationCurve: Curves.easeOut,
                         ),
                       ),
                     );
