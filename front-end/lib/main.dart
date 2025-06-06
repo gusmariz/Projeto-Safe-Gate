@@ -28,7 +28,7 @@ class HistoricoManager extends ChangeNotifier {
         final List<dynamic> data = jsonDecode(response.body);
         return data
             .map((item) => ItemHistorico(
-                  item['descricao'] ?? 'Ação no portão',
+                  item['ds_registro'] ?? 'Ação no portão',
                   _formatTime(item['dt_acao']),
                   _getDiaSemana(DateTime.parse(item['dt_acao']).weekday),
                   _formatDate(item['dt_acao']),
@@ -531,8 +531,16 @@ class MyHomePage extends StatelessWidget {
             ),
             const Divider(height: 1),
             ListTile(
-              leading: const Icon(Icons.admin_panel_settings),
-              title: const Text('Gestão de Usuários'),
+              leading: Icon(
+                Icons.admin_panel_settings,
+                color: Colors.grey[700],
+              ),
+              title: Text(
+                'Gestão de Usuários',
+                style: TextStyle(
+                  fontSize: 20.8,
+                ),
+              ),
               onTap: () {
                 Navigator.pushNamed(context, '/tela_gestao_users');
               },
