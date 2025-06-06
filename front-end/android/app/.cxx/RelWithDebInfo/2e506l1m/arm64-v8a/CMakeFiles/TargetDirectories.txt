@@ -1,2 +1,0 @@
-C:/Users/Gustavo/Projeto-Safe-Gate/android/app/.cxx/RelWithDebInfo/2e506l1m/arm64-v8a/CMakeFiles/edit_cache.dir
-C:/Users/Gustavo/Projeto-Safe-Gate/android/app/.cxx/RelWithDebInfo/2e506l1m/arm64-v8a/CMakeFiles/rebuild_cache.dir
