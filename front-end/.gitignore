@@ -15,6 +15,8 @@ ios/.symlinks/
 ios/Pods/
 ios/Runner.xcworkspace/
 ios/build/
+ios/Flutter/Generated.xcconfig
+ios/Flutter/flutter_export_environment.sh
 
 *.iml
 *.ipr
@@ -27,4 +29,5 @@ ios/build/
 android/.gradle/
 android/build/
 android/app/build/
+android/app/.cxx/
 *.keystore
