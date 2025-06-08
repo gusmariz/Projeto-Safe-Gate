@@ -75,7 +75,6 @@ class _MudarSenhaFormState extends State<MudarSenhaForm> {
   final _novaSenhaContreller = TextEditingController();
   final _confirmarSenhaController = TextEditingController();
 
-  bool _esconderSenhaAtual = true;
   bool _esconderNovaSenha = true;
   bool _esconderConfirmarSenha = true;
 
@@ -88,7 +87,6 @@ class _MudarSenhaFormState extends State<MudarSenhaForm> {
         children: [
           TextFormField(
             controller: _emailController,
-            obscureText: _esconderSenhaAtual,
             decoration: InputDecoration(
               labelText: 'Seu e-mail',
               border:
