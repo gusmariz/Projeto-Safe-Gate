@@ -44,12 +44,12 @@ class HistoricoManager extends ChangeNotifier {
   }
 
   String _formatTime(String dateTime) {
-    final dt = DateTime.parse(dateTime);
+    final dt = DateTime.parse(dateTime).toLocal();
     return '${dt.hour}:${dt.minute.toString().padLeft(2, '0')}';
   }
 
   String _formatDate(String dateTime) {
-    final dt = DateTime.parse(dateTime);
+    final dt = DateTime.parse(dateTime).toLocal();
     return "${dt.day.toString().padLeft(2, '0')}/${dt.month.toString().padLeft(2, '0')}/${dt.year}";
   }
 
