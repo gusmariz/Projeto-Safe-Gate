@@ -64,7 +64,7 @@ export const login = async (req, res) => {
 
 export const atualizarUsuario = async (req, res) => {
   try {
-    const userEmail = req.user.email;
+    const userEmail = req.body.email || req.user?.email;
 
     if (!userEmail) {
       return res.status(400).json({ error: 'Email é obrigatório' });
