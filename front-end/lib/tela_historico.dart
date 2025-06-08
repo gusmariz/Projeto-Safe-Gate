@@ -7,10 +7,12 @@ class TelaHistorico extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor = Theme.of(context).primaryColor;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Histórico de ações'),
-        centerTitle: true,
+        backgroundColor: primaryColor,
+        foregroundColor: Colors.white,
       ),
       body: const ListaHistorico(),
     );
