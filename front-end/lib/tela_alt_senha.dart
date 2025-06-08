@@ -71,7 +71,7 @@ class MudarSenhaForm extends StatefulWidget {
 
 class _MudarSenhaFormState extends State<MudarSenhaForm> {
   final _formKey = GlobalKey<FormState>();
-  final _senhaAtualController = TextEditingController();
+  final _emailController = TextEditingController();
   final _novaSenhaContreller = TextEditingController();
   final _confirmarSenhaController = TextEditingController();
 
@@ -87,28 +87,17 @@ class _MudarSenhaFormState extends State<MudarSenhaForm> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           TextFormField(
-            controller: _senhaAtualController,
+            controller: _emailController,
             obscureText: _esconderSenhaAtual,
             decoration: InputDecoration(
-                labelText: 'Senha atual',
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                prefixIcon: const Icon(Icons.lock),
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    _esconderSenhaAtual
-                        ? Icons.visibility
-                        : Icons.visibility_off,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _esconderSenhaAtual = !_esconderSenhaAtual;
-                    });
-                  },
-                )),
+              labelText: 'Seu e-mail',
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+              prefixIcon: const Icon(Icons.email),
+            ),
             validator: (valor) {
               if (valor == null || valor.isEmpty) {
-                return 'Por favor, insira sua senha atual';
+                return 'Por favor, insira seu email';
               }
               return null;
             },
@@ -197,6 +186,7 @@ class _MudarSenhaFormState extends State<MudarSenhaForm> {
       try {
         final auth = Provider.of<AuthManager>(context, listen: false);
         await auth.updateUser({
+          'email': _emailController.text,
           'senha': _novaSenhaContreller.text,
         });
 
