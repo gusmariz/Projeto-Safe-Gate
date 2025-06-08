@@ -65,8 +65,18 @@ export const login = async (req, res) => {
 export const atualizarUsuario = async (req, res) => {
   try {
     const userEmail = req.user.email;
-    const { nome, telefone, senha } = req.body;
 
+    if (!userEmail) {
+      return res.status(400).json({ error: 'Email é obrigatório' });
+    }
+
+    const [usuarios] = await pool.query('SELECT * FROM usuarios WHERE email = ?', [userEmail]);
+
+    if (!usuarios.length) {
+      return res.status(404).json({ error: 'Email não encontrado' });
+    }
+
+    const { nome, telefone, senha } = req.body;
     const senhaHash = senha ? await bcrypt.hash(senha, 10) : null;
 
     await pool.query(
