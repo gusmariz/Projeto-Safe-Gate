@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hello/main.dart';
 import 'package:provider/provider.dart';
 
@@ -11,29 +12,50 @@ class TelaAltSenha extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Alterar Senha'),
         backgroundColor: primaryColor,
         foregroundColor: Colors.white,
-        centerTitle: true,
       ),
       body: Container(
         color: primaryColor,
-        child: Center(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Card(
-                elevation: 6,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: const Padding(
-                  padding: EdgeInsets.all(24),
-                  child: MudarSenhaForm(),
+        child: Column(
+          children: [
+            Card(
+              elevation: 2,
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                child: Text(
+                  'ALTERAR SENHA',
+                  style: GoogleFonts.roboto(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: -0.64,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
               ),
             ),
-          ),
+            const SizedBox(height: 24),
+            Expanded(
+              child: Center(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 24),
+                    child: Card(
+                      elevation: 6,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: const Padding(
+                        padding: EdgeInsets.all(24),
+                        child: MudarSenhaForm(),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
