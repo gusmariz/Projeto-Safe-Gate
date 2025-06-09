@@ -139,17 +139,19 @@ class HistoricoManager extends ChangeNotifier {
 
   Future<void> removerItem(ItemHistorico item) async {
     try {
+
       final response = await http.delete(
-        Uri.parse('https://projeto-safe-gate-production.up.railway.app/gate/history/${item.id}'),
-        headers: {'Authorization': 'Bearer ${authManager._token}',},
+        Uri.parse(
+            'https://projeto-safe-gate-production.up.railway.app/gate/history/${item.id}'),
+        headers: {
+          'Authorization': 'Bearer ${authManager._token}',
+          'Content-type': 'application/json',
+        },
       );
 
       if (response.statusCode == 200) {
-        final index = historico.indexWhere((i) =>
-            i.titulo == item.titulo &&
-            i.hora == item.hora &&
-            i.dia == item.dia &&
-            i.data == item.data);
+
+        final index = _historico.indexWhere((i) => i.id == item.id);
 
         if (index != -1) {
           final itemRemovido = _historico.removeAt(index);
