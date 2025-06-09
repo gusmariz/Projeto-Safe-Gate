@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hello/main.dart';
 import 'package:provider/provider.dart';
 
@@ -14,7 +15,42 @@ class TelaHistorico extends StatelessWidget {
         backgroundColor: primaryColor,
         foregroundColor: Colors.white,
       ),
-      body: const ListaHistorico(),
+      body: Container(
+        color: primaryColor,
+        child: Column(
+          children: [
+            Card(
+              elevation: 2,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                child: Text(
+                  'HISTÓRICO',
+                  style: GoogleFonts.roboto(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: -0.64,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+            Expanded(
+              child: Card(
+                margin: const EdgeInsets.symmetric(horizontal: 24),
+                elevation: 6,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: const Padding(
+                  padding: EdgeInsets.all(16),
+                  child: ListaHistorico(),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -103,7 +139,7 @@ class _ElementoHistoricoState extends State<ElementoHistorico> {
             child: Icon(Icons.person, size: 36),
           ),
           title: Text(
-            widget.item.titulo,
+            '${widget.item.id} - ${widget.item.titulo}',
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           subtitle: Column(
