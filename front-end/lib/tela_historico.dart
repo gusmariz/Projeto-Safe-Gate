@@ -61,12 +61,13 @@ class _ListaHistoricoState extends State<ListaHistorico> {
 }
 
 class ItemHistorico {
+  final int id;
   final String titulo;
   final String hora;
   final String dia;
   final String data;
 
-  ItemHistorico(this.titulo, this.hora, this.dia, this.data);
+  ItemHistorico(this.id, this.titulo, this.hora, this.dia, this.data);
 }
 
 class ElementoHistorico extends StatefulWidget {

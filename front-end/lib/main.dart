@@ -29,6 +29,7 @@ class HistoricoManager extends ChangeNotifier {
         final List<dynamic> data = jsonDecode(response.body);
         return data
             .map((item) => ItemHistorico(
+                  item['id_registro'],
                   item['ds_registro'] ?? 'Ação no portão',
                   _formatTime(item['dt_acao']),
                   _getDiaSemana(DateTime.parse(item['dt_acao']).weekday),
@@ -105,6 +106,7 @@ class HistoricoManager extends ChangeNotifier {
       if (response.statusCode == 200) {
         final now = DateTime.now();
         final item = ItemHistorico(
+          0,
           'Portão $acao',
           '${now.hour}:${now.minute.toString().padLeft(2, '0')}',
           _getDiaSemana(now.weekday),
@@ -135,36 +137,49 @@ class HistoricoManager extends ChangeNotifier {
     }
   }
 
-  void removerItem(ItemHistorico item) {
-    final index = historico.indexWhere((i) =>
-        i.titulo == item.titulo &&
-        i.hora == item.hora &&
-        i.dia == item.dia &&
-        i.data == item.data);
+  Future<void> removerItem(ItemHistorico item) async {
+    try {
+      final response = await http.delete(
+        Uri.parse('https://projeto-safe-gate-production.up.railway.app/gate/history/${item.id}'),
+        headers: {'Authorization': 'Bearer ${authManager._token}',},
+      );
 
-    if (index != -1) {
-      final itemRemovido = _historico.removeAt(index);
-      final acao = itemRemovido.titulo.replaceAll('Joãozinho', '').trim();
+      if (response.statusCode == 200) {
+        final index = historico.indexWhere((i) =>
+            i.titulo == item.titulo &&
+            i.hora == item.hora &&
+            i.dia == item.dia &&
+            i.data == item.data);
 
-      switch (acao) {
-        case 'abrir':
-          _aberturas--;
-          break;
-        case 'fechar':
-          _fechamentos--;
-          break;
-        case 'parar':
-          _paradas--;
-          break;
+        if (index != -1) {
+          final itemRemovido = _historico.removeAt(index);
+          final acao = itemRemovido.titulo.replaceAll('Joãozinho', '').trim();
+
+          switch (acao) {
+            case 'abrir':
+              _aberturas--;
+              break;
+            case 'fechar':
+              _fechamentos--;
+              break;
+            case 'parar':
+              _paradas--;
+              break;
+          }
+
+          if (_historico.isEmpty) {
+            _ultimaAcao = null;
+          } else if (_historico.last.titulo.contains(acao)) {
+            _ultimaAcao = acao;
+          }
+
+          notifyListeners();
+        }
+      } else {
+        throw Exception('Falha ao excluir registro');
       }
-
-      if (_historico.isEmpty) {
-        _ultimaAcao = null;
-      } else if (_historico.last.titulo.contains(acao)) {
-        _ultimaAcao = acao;
-      }
-
-      notifyListeners();
+    } catch (error) {
+      throw Exception('Erro de conexão: $error');
     }
   }
 
