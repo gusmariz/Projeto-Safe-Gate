@@ -8,6 +8,7 @@ import 'tela_login.dart';
 import 'tela_alt_senha.dart';
 import 'tela_historico.dart';
 import 'tela_gestao_users.dart';
+import 'tela_perfil.dart';
 
 void main() => runApp(const MyApp());
 
@@ -139,7 +140,6 @@ class HistoricoManager extends ChangeNotifier {
 
   Future<void> removerItem(ItemHistorico item) async {
     try {
-
       final response = await http.delete(
         Uri.parse(
             'https://projeto-safe-gate-production.up.railway.app/gate/history/${item.id}'),
@@ -150,7 +150,6 @@ class HistoricoManager extends ChangeNotifier {
       );
 
       if (response.statusCode == 200) {
-
         final index = _historico.indexWhere((i) => i.id == item.id);
 
         if (index != -1) {
@@ -248,7 +247,7 @@ class AuthManager extends ChangeNotifier {
     }
   }
 
-  Future<void> updateUser(Map<String, String> dados) async {
+  Future<void> updateUser(Map<String, dynamic> dados) async {
     try {
       final response = await http.put(
         Uri.parse(
@@ -259,6 +258,15 @@ class AuthManager extends ChangeNotifier {
         },
         body: jsonEncode(dados),
       );
+
+      if (response.statusCode == 200) {
+        _user = {
+          ...?_user,
+          if (dados['nome'] != null) 'nome': dados['nome'],
+          if (dados['telefone'] != null) 'telefone': dados['telefone'],
+        };
+        notifyListeners();
+      }
 
       if (response.statusCode != 200) {
         throw Exception('Erro ao atualizar usuário');
@@ -321,6 +329,7 @@ class _MyAppState extends State<MyApp> {
           '/telaHistorico': (context) => const TelaHistorico(),
           '/telaAltSenha': (context) => const TelaAltSenha(),
           '/tela_gestao_users': (context) => const TelaGestaoUsers(),
+          '/perfil': (context) => const TelaPerfil(),
         },
       ),
     );
@@ -465,31 +474,37 @@ class MyHomePage extends StatelessWidget {
                 ),
               ),
             ),
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.secondaryContainer,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Consumer<AuthManager>(
-                builder: (context, auth, child) => ListTile(
-                  title: Text(
-                    auth.user?['nome'] ?? 'Usuário',
-                    style: TextStyle(
-                      fontSize: 20.8,
-                      fontWeight: FontWeight.w500,
-                      color: Theme.of(context).colorScheme.onSecondaryContainer,
+            InkWell(
+              onTap: () {
+                Navigator.pushNamed(context, '/perfil');
+              },
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.secondaryContainer,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Consumer<AuthManager>(
+                  builder: (context, auth, child) => ListTile(
+                    title: Text(
+                      auth.user?['nome'] ?? 'Usuário',
+                      style: TextStyle(
+                        fontSize: 20.8,
+                        fontWeight: FontWeight.w500,
+                        color:
+                            Theme.of(context).colorScheme.onSecondaryContainer,
+                      ),
                     ),
-                  ),
-                  leading: const CircleAvatar(
-                    radius: 28,
-                    child: Icon(Icons.person, size: 36),
-                  ),
-                  subtitle: Text(
-                    auth.user?['email'] ?? '',
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontSize: 14,
+                    leading: const CircleAvatar(
+                      radius: 28,
+                      child: Icon(Icons.person, size: 36),
+                    ),
+                    subtitle: Text(
+                      auth.user?['email'] ?? '',
+                      style: TextStyle(
+                        color: Colors.grey[600],
+                        fontSize: 14,
+                      ),
                     ),
                   ),
                 ),
