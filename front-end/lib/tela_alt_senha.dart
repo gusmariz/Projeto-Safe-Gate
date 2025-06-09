@@ -178,8 +178,6 @@ class _MudarSenhaFormState extends State<MudarSenhaForm> {
   }
 
   void _mudarSenha() async {
-    // Implementa a lógica para alterar a senha
-    // Mostra o feedback para o usuário
     if (_formKey.currentState!.validate()) {
       try {
         final auth = Provider.of<AuthManager>(context, listen: false);
