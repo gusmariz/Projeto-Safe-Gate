@@ -193,7 +193,7 @@ class _FormularioPerfilState extends State<FormularioPerfil> {
         final auth = Provider.of<AuthManager>(context, listen: false);
         await auth.updateUser({
           'nome': _nomeController.text.isNotEmpty ? _nomeController.text : null,
-          'telefone': _telefoneController.text.isNotEmpty ? _telefoneController : null,
+          'telefone': _telefoneController.text.isNotEmpty ? _telefoneController.text : null,
           'email': _emailController.text,
         });
 
