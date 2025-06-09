@@ -43,17 +43,17 @@ export const history = async (req, res) => {
 
 export const deleteRegistro = async (req, res) => {
     try {
-        const { id_registro } = req.params;
+        const { id } = req.params;
         const token = req.headers.authorization.split(' ')[1];
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        const [registro] = await pool.query('SELECT * FROM registros WHERE id_registro = ?', [id_registro]);
+        const [registro] = await pool.query('SELECT * FROM registros WHERE id_registro = ?', [id]);
 
         if (!registro.length) {
             return res.status(404).json({ error: 'Registro não encontrado' });
         }
 
-        await pool.query('CALL excluir_registro(?)', [id_registro]);
+        await pool.query('CALL excluir_registro(?)', [id]);
 
         res.json({ message: 'Registro excluído com sucesso!' });
     } catch (error) {
