@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:hello/tela_gestao_users.dart';
 
 class AdminManager {
   final String token;
@@ -29,6 +30,23 @@ class AdminManager {
 
     if (response.statusCode != 200) {
       throw Exception('Erro ao excluir usuário');
+    }
+  }
+
+  Future<List<LogEntry>> fetchLogs() async {
+    final response = await http.get(
+      Uri.parse(
+          'https://projeto-safe-gate-production.up.railway.app/admin/logs'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      return data.map((item) => LogEntry.fromMap(item)).toList();
+    } else {
+      throw Exception('Falha ao carregar logs');
     }
   }
 }
