@@ -19,6 +19,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
   final _emailController = TextEditingController();
   final _senhaController = TextEditingController();
   final _confirmarSenhaController = TextEditingController();
+  bool _esconderSenha = true;
 
   String? _tipoUsuario;
   bool _tipoUsuarioInvalido = false;
@@ -60,6 +61,12 @@ class _CadastroScreenState extends State<CadastroScreen> {
         setState(() {});
       }
     }
+  }
+
+  void _alternarVisibilidadeSenha() {
+    setState(() {
+      _esconderSenha = !_esconderSenha;
+    });
   }
 
   Widget buildTextField(TextEditingController controller, String label) {
@@ -149,11 +156,17 @@ class _CadastroScreenState extends State<CadastroScreen> {
                           const SizedBox(height: 16),
                           TextFormField(
                             controller: _senhaController,
-                            obscureText: true,
+                            obscureText: _esconderSenha,
                             decoration: InputDecoration(
                               labelText: 'Senha',
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
+                              ),
+                              suffixIcon: IconButton(
+                                icon: Icon(_esconderSenha
+                                    ? Icons.visibility
+                                    : Icons.visibility_off),
+                                onPressed: _alternarVisibilidadeSenha,
                               ),
                             ),
                             validator: (value) {
@@ -169,11 +182,19 @@ class _CadastroScreenState extends State<CadastroScreen> {
                           const SizedBox(height: 16),
                           TextFormField(
                             controller: _confirmarSenhaController,
-                            obscureText: true,
+                            obscureText: _esconderSenha,
                             decoration: InputDecoration(
-                                labelText: 'Confirmar senha',
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12))),
+                              labelText: 'Confirmar senha',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              suffixIcon: IconButton(
+                                icon: Icon(_esconderSenha
+                                    ? Icons.visibility
+                                    : Icons.visibility_off),
+                                onPressed: _alternarVisibilidadeSenha,
+                              ),
+                            ),
                           ),
                           const SizedBox(height: 24),
                           Text(
