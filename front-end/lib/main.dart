@@ -218,7 +218,13 @@ class AuthManager extends ChangeNotifier {
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
         _token = responseData['token'];
-        _user = responseData['user'];
+
+        final user = responseData['user'];
+        _user = {
+          ...user,
+          'tipo_usuario': user['tipo_usuario'] ?? user['tipo'],
+        };
+        
         notifyListeners();
       } else {
         throw Exception(
