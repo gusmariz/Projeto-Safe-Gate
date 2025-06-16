@@ -24,7 +24,7 @@ class AdminManager {
   Future<void> deleteUsuario(String email) async {
     final response = await http.delete(
       Uri.parse(
-          'https://projeto-safe-gate-production.up.railway.app/admin/users/:$email'),
+          'https://projeto-safe-gate-production.up.railway.app/admin/users/$email'),
       headers: {'Authorization': 'Bearer $token'},
     );
 
